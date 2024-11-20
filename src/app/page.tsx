@@ -1,6 +1,7 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import Link from "next/link";
 
 function Logo() {
   return (
@@ -12,15 +13,15 @@ function Logo() {
 }
 function LoginBtn() {
   return (
-    <Button variant="destructive" className="md:px-4 px-8">
-      Log In
+    <Button variant="destructive" className="md:px-4 px-8" asChild>
+      <Link href={"/login"}>Log In</Link>
     </Button>
   );
 }
 function SignUpBtn() {
   return (
-    <Button variant="outline" className="md:px-4 px-8">
-      Sign Up
+    <Button variant="outline" className="md:px-4 px-8" asChild>
+      <Link href={"/signup"}>Sign Up</Link>
     </Button>
   );
 }
