@@ -5,6 +5,7 @@ import { VersionSwitcher } from "@/components/ui/version-switcher";
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarGroup,
   SidebarGroupContent,
   SidebarGroupLabel,
@@ -16,8 +17,9 @@ import {
 } from "@/components/ui/sidebar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { auth } from "@/auth";
-import { redirect } from "next/navigation";
 import { SessionType } from "@/app/lib/definitions";
+import { LogOut } from "lucide-react";
+import { doOAuthLogout } from "@/app/lib/actions";
 
 // This is sample data.
 const data = {
@@ -52,98 +54,6 @@ const data = {
         },
         {
           title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-        {
-          title: "Optimizing",
-          url: "#",
-        },
-        {
-          title: "Configuring",
-          url: "#",
-        },
-        {
-          title: "Testing",
-          url: "#",
-        },
-        {
-          title: "Authentication",
-          url: "#",
-        },
-        {
-          title: "Deploying",
-          url: "#",
-        },
-        {
-          title: "Upgrading",
-          url: "#",
-        },
-        {
-          title: "Examples",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
-        },
-        {
-          title: "next.config.js Options",
-          url: "#",
-        },
-        {
-          title: "CLI",
-          url: "#",
-        },
-        {
-          title: "Edge Runtime",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Architecture",
-      url: "#",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-        {
-          title: "Next.js Compiler",
-          url: "#",
-        },
-        {
-          title: "Supported Browsers",
-          url: "#",
-        },
-        {
-          title: "Turbopack",
           url: "#",
         },
       ],
@@ -192,10 +102,32 @@ export async function AppSidebar({
           <div className="flex items-center gap-2">
             <Avatar>
               <AvatarImage src={user.image} />
-              <AvatarFallback>User</AvatarFallback>
+              <AvatarFallback>{user.name}</AvatarFallback>
             </Avatar>
             <h1>{user.name}</h1>
           </div>
+
+          <SidebarGroup>
+            {/* <LogOut aria-label="Log Out" /> */}
+            <SidebarFooter>
+              <SidebarMenu>
+                <SidebarMenuItem>
+                  <SidebarMenuButton
+                    asChild
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
+                    <form action={doOAuthLogout}>
+                      <button className="flex gap-2" type="submit">
+                        <LogOut />
+                        <span>Log out</span>
+                      </button>
+                    </form>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              </SidebarMenu>
+            </SidebarFooter>
+          </SidebarGroup>
         </SidebarGroup>
       </SidebarContent>
       <SidebarRail />
