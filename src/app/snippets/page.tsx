@@ -8,7 +8,7 @@ const Home = async () => {
   if (!session?.user) {
     redirect("/login");
   }
-  return <div>{session.user.name}</div>;
+  return <div>{session?.user?.name}</div>;
 };
 
 export default Home;

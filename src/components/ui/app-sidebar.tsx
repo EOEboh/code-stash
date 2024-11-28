@@ -101,10 +101,10 @@ export async function AppSidebar({
         <SidebarGroup>
           <div className="flex items-center gap-2">
             <Avatar>
-              <AvatarImage src={user.image} />
-              <AvatarFallback>{user.name}</AvatarFallback>
+              <AvatarImage src={user?.image} />
+              <AvatarFallback>{user?.name}</AvatarFallback>
             </Avatar>
-            <h1>{user.name}</h1>
+            <h1>{user?.name}</h1>
           </div>
 
           <SidebarGroup>
