@@ -6,6 +6,5 @@ export default async function connectDB(): Promise<void> {
     console.log("DB Connected!");
   } catch (error) {
     console.error("DB Connection Error", error);
-    process.exit(1);
   }
 }
