@@ -3,6 +3,8 @@ import GitHub from "next-auth/providers/github";
 import Google from "next-auth/providers/google";
 import { MongoDBAdapter } from "@auth/mongodb-adapter";
 import client from "./app/lib/db";
+import User from "./app/models/UserSchema";
+import { Account } from "./app/models/AccountSchema";
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: MongoDBAdapter(client),
@@ -28,12 +30,29 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       allowDangerousEmailAccountLinking: true,
     }),
   ],
-  // callbacks: {
-  //   authorized: async ({ auth }) => {
-  //     // Logged in users are authenticated, otherwise redirect to login page
-  //     return !!auth;
-  //   },
-  // },
+  callbacks: {
+    async signIn({ user, account, profile }) {
+      try {
+        const existingUser = await User.findOne({ email: user.email });
+        if (existingUser) {
+          const existingAccount = await Account.findOne({
+            provider: account?.provider,
+            providerAccountId: account?.providerAccountId,
+          });
+
+          if (existingAccount) {
+            return true;
+          } else {
+            throw new Error("OAuth Account Not Linked");
+          }
+        }
+        return true;
+      } catch (error) {
+        console.error("Sign in error", error);
+        return false;
+      }
+    },
+  },
   pages: {
     signIn: "/login",
   },

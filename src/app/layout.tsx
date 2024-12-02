@@ -19,7 +19,9 @@ export default async function RootLayout({
 
   return (
     <html lang="en">
-      <body className={`${inter.className} antialiased p-2`}>{children}</body>
+      <body className={`${inter.className} antialiased p-2 w-full`}>
+        {children}
+      </body>
     </html>
   );
 }
