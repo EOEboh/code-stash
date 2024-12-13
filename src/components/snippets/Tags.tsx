@@ -14,13 +14,13 @@ import { Button } from "../ui/button";
 
 export default function Tags() {
   return (
-    <div className="bg-white p-3 rounded-lg flex flex-col md:flex-row gap-5 justify-center">
-      <div className="overflow-x-auto w-full w-[1112px]">
+    <div className="bg-white p-3 rounded-lg flex flex-col md:flex-row gap-5 justify-center items-center bg-black">
+      <div className="overflow-x-auto w-[1112px] md:w-auto">
         <Swiper
-          slidesPerView={1}
+          slidesPerView={"auto"}
           centeredSlides={true}
           grabCursor
-          spaceBetween={10}
+          spaceBetween={8}
           freeMode={true}
           pagination={{
             clickable: true,
@@ -53,7 +53,7 @@ export default function Tags() {
           <SwiperSlide>Slide 9</SwiperSlide>
         </Swiper>
       </div>
-      <Button className="self-center md:self-auto">Add Tag</Button>
+      <Button className="self-center md:self-auto bg-slate-600">Add Tag</Button>
     </div>
   );
 }
