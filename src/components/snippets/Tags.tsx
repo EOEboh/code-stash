@@ -14,35 +14,44 @@ import { Button } from "../ui/button";
 
 export default function Tags() {
   return (
-    <div className="bg-white p-3 rounded-lg flex flex-col md:flex-row gap-5 justify-center items-center bg-black">
-      <div className="overflow-x-auto w-[1112px] md:w-auto">
+    <div className="max-w-full p-3 rounded-lg flex flex-col md:flex-row gap-5 bg-yellow-900 ">
+      <div className="overflow-x-auto w-[1112px] md:w-auto  ">
         <Swiper
           slidesPerView={"auto"}
           centeredSlides={true}
           grabCursor
           spaceBetween={8}
           freeMode={true}
-          pagination={{
-            clickable: true,
-          }}
           breakpoints={{
-            640: {
+            320: {
+              slidesPerView: 1,
+              spaceBetween: 10,
+            },
+            480: {
               slidesPerView: 2,
+              spaceBetween: 15,
+            },
+            640: {
+              slidesPerView: 3,
               spaceBetween: 20,
             },
             768: {
-              slidesPerView: 3,
-              spaceBetween: 30,
+              slidesPerView: 4,
+              spaceBetween: 25,
             },
             1024: {
-              slidesPerView: 4,
-              spaceBetween: 40,
+              slidesPerView: 5,
+              spaceBetween: 30,
+            },
+            1280: {
+              slidesPerView: 6,
+              spaceBetween: 35,
             },
           }}
           modules={[FreeMode]}
-          className="mySwiper"
+          className="mySwiper w-full"
         >
-          <SwiperSlide className="w-20">Slide 1</SwiperSlide>
+          <SwiperSlide>Slide 1</SwiperSlide>
           <SwiperSlide>Slide 2</SwiperSlide>
           <SwiperSlide>Slide 3</SwiperSlide>
           <SwiperSlide>Slide 4</SwiperSlide>
@@ -50,6 +59,16 @@ export default function Tags() {
           <SwiperSlide>Slide 6</SwiperSlide>
           <SwiperSlide>Slide 7</SwiperSlide>
           <SwiperSlide>Slide 8</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
+          <SwiperSlide>Slide 9</SwiperSlide>
           <SwiperSlide>Slide 9</SwiperSlide>
         </Swiper>
       </div>
