@@ -1,5 +1,10 @@
 import { Star } from "lucide-react";
-import React from "react";
+import { FaJs } from "react-icons/fa";
+import { IoMdTrash } from "react-icons/io";
+import SyntaxHighlighter from "react-syntax-highlighter";
+import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
+import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 
 const AllSnippets = () => {
   return (
@@ -63,10 +68,27 @@ const SnippetDescription = () => {
     </div>
   );
 };
-const SnippetCode = () => {
-  return <div>Code Area</div>;
+
+const SnippetCode: React.FC<{ language: string }> = ({ language }) => {
+  const codeString = "(num) => num + 1";
+  return (
+    <div className="rounded-md overflow-hidden text-sm mt-2 mx-4">
+      <SyntaxHighlighter language="javascript" style={docco} wrapLongLines>
+        {codeString}
+      </SyntaxHighlighter>
+    </div>
+  );
 };
 
 const SnippetFooter = () => {
-  return <div>Footer</div>;
+  return (
+    <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3">
+      <div className="flex gap-1 items-center">
+        <FaJs />
+      </div>
+      <div className="flex gap-1 items-center">
+        <IoMdTrash />
+      </div>
+    </div>
+  );
 };
