@@ -1,8 +1,8 @@
 import React from "react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import Tags from "@/components/snippets/Tags";
-import AllSnippets from "@/components/snippets/AllSnippets";
+import ContentArea from "@/components/snippets/ContentArea";
+import ContentEditor from "@/components/snippets/ContentEditor";
 
 const Home = async () => {
   const session = await auth();
@@ -10,12 +10,13 @@ const Home = async () => {
   if (!session?.user) {
     redirect("/login");
   }
-  return (
-    <div className="flex flex-col justify-start items-center flex-1 overflow-hidden">
-      <Tags />
-      <AllSnippets />
 
-      {/* <div>{session?.user?.name}</div> */}
+  /* <div>{session?.user?.name}</div> */
+
+  return (
+    <div className="flex overflow-hidden gap-2 mt-2 mx-2">
+      <ContentArea />
+      <ContentEditor />
     </div>
   );
 };

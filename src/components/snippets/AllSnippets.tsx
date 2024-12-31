@@ -1,3 +1,5 @@
+"use client";
+
 import { Star } from "lucide-react";
 import { FaJs } from "react-icons/fa";
 import { IoMdTrash } from "react-icons/io";
@@ -5,6 +7,8 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
+import { useContext } from "react";
+import { SnippetContext } from "@/context/SnippetContext";
 
 const AllSnippets = () => {
   return (
@@ -20,8 +24,18 @@ const AllSnippets = () => {
 export default AllSnippets;
 
 const SingleSnippet = () => {
+  const snippetContext = useContext(SnippetContext);
+  if (!snippetContext) {
+    throw new Error("SnippetContext must be used within a SnippetProvider");
+  }
+  const { isEditing } = snippetContext;
+
   return (
-    <div className="max-sm:w-full w-[320px] rounded-md py-4">
+    <div
+      className={`max-sm:w-full ${
+        isEditing ? "w-full" : "w-[320px]"
+      }  rounded-md py-2`}
+    >
       <SnippetHeader />
       <SnippetTags />
       <SnippetDate />
@@ -33,9 +47,20 @@ const SingleSnippet = () => {
 };
 
 const SnippetHeader = () => {
+  const snippetContext = useContext(SnippetContext);
+  if (!snippetContext) {
+    throw new Error("SnippetContext must be used within a SnippetProvider");
+  }
+  const { toggleEditing } = snippetContext;
+
   return (
     <div className="flex justify-between mx-4">
-      <span className="font-bold text-lg w-[87%]">Title</span>
+      <span
+        className="font-bold text-lg w-[87%] cursor-pointer"
+        onClick={toggleEditing}
+      >
+        Title
+      </span>
 
       <Star aria-label="Favourite" />
     </div>
