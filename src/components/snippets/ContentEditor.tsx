@@ -8,12 +8,16 @@ const ContentEditor = () => {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
 
-  const { isEditing, toggleEditing } = snippetContext;
+  const { isEditing, toggleEditing, isMobile } = snippetContext;
   return (
     <div
-      className={`border w-1/2 bg-white p-3 rounded-lg ${
+      className={`border bg-white p-3 rounded-lg ${
         isEditing ? "block" : "hidden"
-      } h-[700px]`}
+      } ${
+        isMobile
+          ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
+          : ""
+      } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px]`}
     >
       <button onClick={toggleEditing} className="flex items-center gap-2">
         <svg

@@ -12,7 +12,7 @@ import { SnippetContext } from "@/context/SnippetContext";
 
 const AllSnippets = () => {
   return (
-    <div className="mt-5 flex flex-wrap gap-5">
+    <div className="mt-4 flex flex-wrap gap-5">
       <SingleSnippet />
       <SingleSnippet />
       <SingleSnippet />
@@ -33,7 +33,7 @@ const SingleSnippet = () => {
   return (
     <div
       className={`max-sm:w-full ${
-        isEditing ? "w-full" : "w-[320px]"
+        isEditing ? "w-full" : "w-[340px]"
       }  rounded-md py-2`}
     >
       <SnippetHeader />
