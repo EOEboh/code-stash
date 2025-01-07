@@ -5,12 +5,12 @@ import { useContext } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
 
 const ContentArea = () => {
-  const snippetContext = useContext(SnippetContext);
-  if (!snippetContext) {
+  const snippetContextData = useContext(SnippetContext);
+  if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
 
-  const { isEditing } = snippetContext;
+  const { isEditing } = snippetContextData;
   return (
     <div
       className={`${

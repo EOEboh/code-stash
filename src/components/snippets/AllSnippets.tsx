@@ -9,26 +9,38 @@ import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { useContext } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
+import { SingleSnippetType } from "@/app/lib/definitions";
 
 const AllSnippets = () => {
+  const snippetContextData = useContext(SnippetContext);
+
+  if (!snippetContextData) {
+    return null;
+  }
+
+  const { allSnippets } = snippetContextData;
+
   return (
     <div className="mt-4 flex flex-wrap gap-5">
-      <SingleSnippet />
-      <SingleSnippet />
-      <SingleSnippet />
-      <SingleSnippet />
+      {allSnippets.map((snippet) => (
+        <SingleSnippet key={snippet.id} snippet={snippet} />
+      ))}
     </div>
   );
 };
 
 export default AllSnippets;
 
-const SingleSnippet = () => {
-  const snippetContext = useContext(SnippetContext);
-  if (!snippetContext) {
+const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
+  snippet,
+}) => {
+  const snippetContextData = useContext(SnippetContext);
+  if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
-  const { isEditing } = snippetContext;
+  const { isEditing } = snippetContextData;
+
+  const { title, tags, description, code, language, creationDate } = snippet;
 
   return (
     <div
@@ -36,22 +48,22 @@ const SingleSnippet = () => {
         isEditing ? "w-full" : "w-[340px]"
       }  rounded-md py-2`}
     >
-      <SnippetHeader />
-      <SnippetTags />
-      <SnippetDate />
-      <SnippetDescription />
-      <SnippetCode />
-      <SnippetFooter />
+      <SnippetHeader title={title} />
+      <SnippetTags tags={tags} />
+      <SnippetDate creationDate={creationDate} />
+      <SnippetDescription description={description} />
+      <SnippetCode code={code} />
+      <SnippetFooter language={language} />
     </div>
   );
 };
 
-const SnippetHeader = () => {
-  const snippetContext = useContext(SnippetContext);
-  if (!snippetContext) {
+const SnippetHeader: React.FC<{ title: string }> = ({ title }) => {
+  const snippetContextData = useContext(SnippetContext);
+  if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
-  const { toggleEditing } = snippetContext;
+  const { toggleEditing } = snippetContextData;
 
   return (
     <div className="flex justify-between mx-4">
@@ -59,57 +71,55 @@ const SnippetHeader = () => {
         className="font-bold text-lg w-[87%] cursor-pointer"
         onClick={toggleEditing}
       >
-        Title
+        {title}
       </span>
 
       <Star aria-label="Favourite" />
     </div>
   );
 };
-const SnippetTags = () => {
+
+const SnippetTags: React.FC<{ tags: string[] }> = ({ tags }) => {
   return (
     <div className="text-[11px] mx-4 flex flex-wrap gap-1 mt-4">
-      <span className="bg-purple-100 p-1 px-2 rouded-lg">functions</span>
-      <span className="bg-purple-100 p-1 px-2 rouded-lg">functions</span>
-      <span className="bg-purple-100 p-1 px-2 rouded-lg">functions</span>
-      <span className="bg-purple-100 p-1 px-2 rouded-lg">functions</span>
+      {tags.map((tag: string, index: number) => (
+        <span key={index} className="bg-purple-100 p-1 px-2 rouded-lg">
+          {tag}
+        </span>
+      ))}
     </div>
   );
 };
-const SnippetDate = () => {
+const SnippetDate: React.FC<{ creationDate: string }> = ({ creationDate }) => {
   return (
     <div className="text-[11px] flex gap-1 font-light mx-4 mt-1">
-      19th December, 2024
+      {creationDate}
     </div>
   );
 };
 
-const SnippetDescription = () => {
-  return (
-    <div className="text-[13px] mx-4 mt-4">
-      Lorem ipsum dolor sit amet consectetur adipisicing elit. Nulla maxime vero
-      neque, molestiae adipisci harum cumque assumenda quam labore fugiat
-      dolorum laborum, fugit facilis? Pariatur!
-    </div>
-  );
+const SnippetDescription: React.FC<{ description: string }> = ({
+  description,
+}) => {
+  return <div className="text-[13px] mx-4 mt-4">{description}</div>;
 };
 
-const SnippetCode: React.FC<{ language: string }> = ({ language }) => {
-  const codeString = "(num) => num + 1";
+const SnippetCode: React.FC<{ code: string }> = ({ code }) => {
   return (
     <div className="rounded-md overflow-hidden text-sm mt-2 mx-4">
       <SyntaxHighlighter language="javascript" style={docco} wrapLongLines>
-        {codeString}
+        {code}
       </SyntaxHighlighter>
     </div>
   );
 };
 
-const SnippetFooter = () => {
+const SnippetFooter: React.FC<{ language: string }> = ({ language }) => {
   return (
     <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3">
       <div className="flex gap-1 items-center">
         <FaJs />
+        <h3>{language}</h3>
       </div>
       <div className="flex gap-1 items-center">
         <IoMdTrash />

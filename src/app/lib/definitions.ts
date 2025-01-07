@@ -24,8 +24,25 @@ export interface SnippetContextProps {
   toggleEditing: () => void;
   isMobile: boolean;
   setIsMobile: React.Dispatch<React.SetStateAction<boolean>>;
+  allSnippets: SingleSnippetType[];
+  setAllSnippets: React.Dispatch<React.SetStateAction<SingleSnippetType[]>>;
+  selectedSnippet: SingleSnippetType | null;
+  setSelectedSnippet: React.Dispatch<
+    React.SetStateAction<SingleSnippetType | null>
+  >;
 }
 
 export interface SnippetProviderProps {
   children: ReactNode;
+}
+
+export interface SingleSnippetType {
+  id: string;
+  title: string;
+  isFavorite: boolean;
+  tags: string[];
+  description: string;
+  code: string;
+  language: string;
+  creationDate: string;
 }

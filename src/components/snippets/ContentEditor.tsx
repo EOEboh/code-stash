@@ -1,6 +1,7 @@
 "use client";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
+import { SingleSnippetType } from "@/app/lib/definitions";
 
 const ContentEditor = () => {
   const snippetContext = useContext(SnippetContext);
@@ -8,7 +9,28 @@ const ContentEditor = () => {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
 
-  const { isEditing, toggleEditing, isMobile } = snippetContext;
+  const {
+    isEditing,
+    toggleEditing,
+    isMobile,
+    selectedSnippet,
+    setSelectedSnippet,
+  } = snippetContext;
+
+  const [singleSnippet, setSingleSnippet] = useState<
+    SingleSnippetType | undefined
+  >(undefined);
+
+  useEffect(() => {
+    if (isEditing) {
+      if (selectedSnippet) {
+        setSingleSnippet(selectedSnippet);
+      }
+    }
+  }, [isEditing, selectedSnippet]);
+
+  console.log("singleSnippet", singleSnippet);
+
   return (
     <div
       className={`border bg-white p-3 rounded-lg ${
@@ -19,7 +41,7 @@ const ContentEditor = () => {
           : ""
       } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px]`}
     >
-      <button onClick={toggleEditing} className="flex items-center gap-2">
+      <button onClick={toggleEditing} className="flex items-center gap-2 mb-2">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
@@ -35,9 +57,33 @@ const ContentEditor = () => {
           />
         </svg>
       </button>
-      Edit Snippet
+      <EditForm
+        singleSnippet={singleSnippet}
+        setSingleSnippet={setSingleSnippet}
+      />
     </div>
   );
 };
 
 export default ContentEditor;
+
+const EditForm = () => {
+  return (
+    <div className="flex flex-col gap-2">
+      <input
+        type="text"
+        placeholder="Title"
+        className="border p-2 rounded-lg"
+      />
+      <textarea
+        placeholder="Description"
+        className="border p-2 rounded-lg"
+      ></textarea>
+      <textarea
+        placeholder="Code"
+        className="border p-2 rounded-lg h-[400px]"
+      ></textarea>
+      <button className="bg-blue-500 text-white p-2 rounded-lg">Save</button>
+    </div>
+  );
+};
