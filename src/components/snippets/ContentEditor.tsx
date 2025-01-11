@@ -11,10 +11,11 @@ const ContentEditor = () => {
 
   const {
     isEditing,
-    toggleEditing,
+    setIsEditing,
     isMobile,
     selectedSnippet,
-    setSelectedSnippet,
+    allSnippets,
+    setAllSnippets,
   } = snippetContext;
 
   const [singleSnippet, setSingleSnippet] = useState<
@@ -41,7 +42,10 @@ const ContentEditor = () => {
           : ""
       } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px]`}
     >
-      <button onClick={toggleEditing} className="flex items-center gap-2 mb-2">
+      <button
+        onClick={() => setIsEditing(false)}
+        className="flex items-center gap-2 mb-2"
+      >
         <svg
           xmlns="http://www.w3.org/2000/svg"
           className="h-6 w-6"
@@ -57,23 +61,50 @@ const ContentEditor = () => {
           />
         </svg>
       </button>
-      <EditForm
-        singleSnippet={singleSnippet}
-        setSingleSnippet={setSingleSnippet}
-      />
+
+      {singleSnippet && (
+        <EditForm
+          singleSnippet={singleSnippet}
+          setSingleSnippet={setSingleSnippet}
+          allSnippets={allSnippets}
+          setAllSnippets={setAllSnippets}
+        />
+      )}
     </div>
   );
 };
 
 export default ContentEditor;
 
-const EditForm = () => {
+const EditForm: React.FC<{
+  singleSnippet: SingleSnippetType;
+  setSingleSnippet: React.Dispatch<
+    React.SetStateAction<SingleSnippetType | undefined>
+  >;
+  allSnippets: SingleSnippetType[];
+  setAllSnippets: React.Dispatch<React.SetStateAction<SingleSnippetType[]>>;
+}> = ({ singleSnippet, setSingleSnippet, allSnippets, setAllSnippets }) => {
+  function updateSnippet(event: React.ChangeEvent<HTMLInputElement>) {
+    const newSingleSnippet = { ...singleSnippet, title: event.target.value };
+    setSingleSnippet(newSingleSnippet);
+
+    const newAllSnippets = allSnippets.map((snippet) => {
+      if (snippet.id === singleSnippet.id) {
+        return newSingleSnippet;
+      }
+      return snippet;
+    });
+    setAllSnippets(newAllSnippets);
+  }
+
   return (
     <div className="flex flex-col gap-2">
       <input
         type="text"
         placeholder="Title"
         className="border p-2 rounded-lg"
+        value={singleSnippet?.title}
+        onChange={updateSnippet}
       />
       <textarea
         placeholder="Description"

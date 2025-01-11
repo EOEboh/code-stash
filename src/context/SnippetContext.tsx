@@ -29,8 +29,14 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleEditing = () => {
-    setIsEditing((prevState) => !prevState);
+  const toggleEditing = (snippet: SingleSnippetType) => {
+    setIsEditing((prevState) => {
+      if (selectedSnippet?.id === snippet.id) {
+        return !prevState;
+      }
+      return true;
+    });
+    setSelectedSnippet(snippet);
   };
 
   useEffect(() => {
@@ -100,6 +106,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     <SnippetContext.Provider
       value={{
         isEditing,
+        setIsEditing,
         toggleEditing,
         isMobile,
         setIsMobile,

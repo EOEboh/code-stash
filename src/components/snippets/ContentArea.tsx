@@ -1,8 +1,9 @@
 "use client";
-import Tags from "@/components/snippets/Tags";
+// import Tags from "@/components/snippets/Tags";
 import AllSnippets from "@/components/snippets/AllSnippets";
 import { useContext } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
+import SearchBar from "../search/SearchBar";
 
 const ContentArea = () => {
   const snippetContextData = useContext(SnippetContext);
@@ -17,7 +18,8 @@ const ContentArea = () => {
         isEditing ? "w-[50%]" : "w-full"
       }  max-w-[1112px] flex flex-col gap-5`}
     >
-      <Tags />
+      {/* <Tags /> */}
+      <SearchBar />
       <AllSnippets />
     </div>
   );

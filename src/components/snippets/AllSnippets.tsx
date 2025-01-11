@@ -48,7 +48,7 @@ const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
         isEditing ? "w-full" : "w-[340px]"
       }  rounded-md py-2`}
     >
-      <SnippetHeader title={title} />
+      <SnippetHeader title={title} snippet={snippet} />
       <SnippetTags tags={tags} />
       <SnippetDate creationDate={creationDate} />
       <SnippetDescription description={description} />
@@ -58,7 +58,10 @@ const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
   );
 };
 
-const SnippetHeader: React.FC<{ title: string }> = ({ title }) => {
+const SnippetHeader: React.FC<{
+  title: string;
+  snippet: SingleSnippetType;
+}> = ({ title, snippet }) => {
   const snippetContextData = useContext(SnippetContext);
   if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
@@ -69,7 +72,7 @@ const SnippetHeader: React.FC<{ title: string }> = ({ title }) => {
     <div className="flex justify-between mx-4">
       <span
         className="font-bold text-lg w-[87%] cursor-pointer"
-        onClick={toggleEditing}
+        onClick={() => toggleEditing(snippet)}
       >
         {title}
       </span>
