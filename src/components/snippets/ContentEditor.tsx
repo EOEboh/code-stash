@@ -16,6 +16,8 @@ const ContentEditor = () => {
     selectedSnippet,
     allSnippets,
     setAllSnippets,
+    isNewSnippet,
+    setIsNewSnippet,
   } = snippetContext;
 
   const [singleSnippet, setSingleSnippet] = useState<
@@ -30,7 +32,17 @@ const ContentEditor = () => {
     }
   }, [isEditing, selectedSnippet]);
 
-  console.log("singleSnippet", singleSnippet);
+  useEffect(() => {
+    if (isNewSnippet) {
+      if (singleSnippet && singleSnippet.title !== "") {
+        setAllSnippets([...allSnippets, singleSnippet]);
+
+        setIsNewSnippet(false);
+      }
+    }
+  }, [singleSnippet]);
+
+  // console.log("singleSnippet", singleSnippet);
 
   return (
     <div
@@ -43,7 +55,7 @@ const ContentEditor = () => {
       } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px]`}
     >
       <button
-        onClick={() => setIsEditing(false)}
+        onClick={() => setIsEditing && setIsEditing(false)}
         className="flex items-center gap-2 mb-2"
       >
         <svg

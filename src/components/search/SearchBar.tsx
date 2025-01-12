@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
 import { SnippetContextProps } from "@/app/lib/definitions";
+import { v4 as uuidv4 } from "uuid";
 
 const SearchBar = ({}) => {
   // const [searchTerm, setSearchTerm] = useState("");
@@ -19,12 +20,16 @@ const SearchBar = ({}) => {
   //   setAllSnippets(filteredSnippets);
   // };
 
-  const { setIsEditing, allSnippets, setAllSnippets, setSelectedSnippet } =
-    useContext(SnippetContext);
+  const snippetContextData = useContext(SnippetContext);
+  if (!snippetContextData) {
+    throw new Error("SnippetContext must be used within a SnippetProvider");
+  }
+  const { setIsEditing, setSelectedSnippet, setIsNewSnippet } =
+    snippetContextData;
 
   function createNewSnippet() {
-    const newSnippet = {
-      id: "",
+    const newSingleSnippet = {
+      id: uuidv4(),
       title: "",
       isFavorite: false,
       tags: [""],
@@ -34,8 +39,12 @@ const SearchBar = ({}) => {
       creationDate: "",
     };
 
-    setAllSnippets([...allSnippets, newSnippet]);
-    setSelectedSnippet(newSnippet);
+    // if (newSingleSnippet.title === "") {
+    //   newSingleSnippet.title = "Untitled Snippet";
+    // }
+
+    setIsNewSnippet(true);
+    setSelectedSnippet(newSingleSnippet);
     setIsEditing(true);
   }
 

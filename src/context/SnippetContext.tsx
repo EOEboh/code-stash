@@ -18,6 +18,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
   const [allSnippets, setAllSnippets] = useState<SingleSnippetType[]>([]);
   const [selectedSnippet, setSelectedSnippet] =
     useState<SingleSnippetType | null>(null);
+  const [isNewSnippet, setIsNewSnippet] = useState<boolean>(false);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
@@ -114,6 +115,8 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
         setAllSnippets,
         selectedSnippet,
         setSelectedSnippet,
+        isNewSnippet,
+        setIsNewSnippet,
       }}
     >
       {children}
