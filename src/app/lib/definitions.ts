@@ -49,3 +49,8 @@ export interface SingleSnippetType {
   language: string;
   creationDate: string;
 }
+
+export interface SingleTagType {
+  id: string;
+  name: string;
+}
