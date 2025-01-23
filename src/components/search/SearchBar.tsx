@@ -32,7 +32,7 @@ const SearchBar = ({}) => {
       id: uuidv4(),
       title: "",
       isFavorite: false,
-      tags: [""],
+      tags: [],
       description: "",
       code: "",
       language: "",

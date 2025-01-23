@@ -106,8 +106,11 @@ const EditForm: React.FC<{
   allSnippets: SingleSnippetType[];
   setAllSnippets: React.Dispatch<React.SetStateAction<SingleSnippetType[]>>;
 }> = ({ singleSnippet, setSingleSnippet, allSnippets, setAllSnippets }) => {
-  function updateSnippet(event: React.ChangeEvent<HTMLInputElement>) {
-    const newSingleSnippet = { ...singleSnippet, title: event.target.value };
+  function updateSnippet(
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) {
+    const { name, value } = event.target;
+    const newSingleSnippet = { ...singleSnippet, [name]: value };
     setSingleSnippet(newSingleSnippet);
 
     const newAllSnippets = allSnippets.map((snippet) => {
@@ -131,6 +134,7 @@ const EditForm: React.FC<{
     <div className="flex flex-col gap-2">
       <input
         type="text"
+        name="title"
         placeholder="Title"
         className="border p-2 rounded-lg outline-none "
         value={singleSnippet?.title}
@@ -139,9 +143,12 @@ const EditForm: React.FC<{
       />
 
       <textarea
+        name="description"
         placeholder="Description"
         className="border p-2 rounded-lg outline-none resize-none"
+        value={singleSnippet?.description}
         onKeyDown={handleKeyDown}
+        onChange={updateSnippet}
       ></textarea>
       <textarea
         placeholder="Code"
@@ -229,31 +236,35 @@ const TagsDisplay: React.FC<{
       onMouseEnter={() => setIsHover(true)}
       onMouseLeave={() => setIsHover(false)}
     >
-      {tags.map((tag, index) => (
-        <span
-          key={index}
-          className="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg flex items-center gap-1"
-        >
-          {tag}
-          <button onClick={() => removeTag(tag)}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              className="lucide lucide-x"
-            >
-              <line x1="18" y1="6" x2="6" y2="18" />
-              <line x1="6" y1="6" x2="18" y2="18" />
-            </svg>
-          </button>
-        </span>
-      ))}
+      {tags.length === 0 ? (
+        <span className="text-gray-500">No Tags</span>
+      ) : (
+        tags.map((tag, index) => (
+          <span
+            key={index}
+            className="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg flex items-center gap-1"
+          >
+            {tag}
+            <button onClick={() => removeTag(tag)}>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="lucide lucide-x"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          </span>
+        ))
+      )}
       {isHover && (
         <button onClick={toggleTagsList}>
           <svg
