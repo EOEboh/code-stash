@@ -60,3 +60,10 @@ body {
   justify-content: center;
   align-items: center;
 }
+
+.sticky {
+  position: -webkit-sticky; /* For Safari */
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Adjust as needed */
+}

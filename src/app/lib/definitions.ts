@@ -51,6 +51,6 @@ export interface SingleSnippetType {
 }
 
 export interface SingleTagType {
-  id: string;
+  _id: number;
   name: string;
 }

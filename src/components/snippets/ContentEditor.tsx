@@ -2,7 +2,15 @@
 import { useContext, useEffect, useState } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
 import { SingleSnippetType } from "@/app/lib/definitions";
-import TagsList from "@/components/TagsList"; // Import the TagsList component
+import TagsList from "@/components/TagsList";
+import AceEditor from "react-ace";
+import { config } from "ace-builds";
+config.set("basePath", "path");
+
+import "ace-builds/src-noconflict/mode-java";
+import "ace-builds/src-noconflict/theme-github";
+import "ace-builds/src-noconflict/ext-language_tools";
+import { relative } from "path";
 
 const ContentEditor = () => {
   const snippetContext = useContext(SnippetContext);
@@ -53,7 +61,7 @@ const ContentEditor = () => {
         isMobile
           ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
           : ""
-      } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px]`}
+      } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px] sticky`}
     >
       <button
         onClick={() => setIsEditing && setIsEditing(false)}
@@ -149,11 +157,37 @@ const EditForm: React.FC<{
         value={singleSnippet?.description}
         onKeyDown={handleKeyDown}
         onChange={updateSnippet}
-      ></textarea>
-      <textarea
-        placeholder="Code"
-        className="border p-2 rounded-lg outline-none resize-none"
-      ></textarea>
+      />
+      <div className="flex flex-col gap-2">
+        <AceEditor
+          placeholder="Placeholder Text"
+          mode="javascript"
+          theme="solarized_dark"
+          name="code"
+          style={{
+            width: "500px",
+            maxWidth: "100%",
+            overflow: "hidden",
+            height: "300px",
+          }}
+          fontSize={14}
+          lineHeight={24}
+          showPrintMargin={true}
+          showGutter={false}
+          highlightActiveLine={true}
+          value={singleSnippet?.code}
+          setOptions={{
+            enableBasicAutocompletion: true,
+            enableLiveAutocompletion: true,
+            enableSnippets: true,
+            enableMobileMenu: true,
+            showLineNumbers: true,
+            tabSize: 2,
+          }}
+          wrapEnabled
+        />
+      </div>
+
       <button className="bg-blue-500 text-white p-2 rounded-lg">Save</button>
     </div>
   );

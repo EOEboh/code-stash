@@ -1,3 +1,4 @@
+import { SingleTagType } from "@/app/lib/definitions";
 import React from "react";
 
 const TagsList: React.FC<{
@@ -13,7 +14,7 @@ const TagsList: React.FC<{
   handleAddCustomTag,
   selectedTags,
 }) => {
-  const allTags = [
+  const allTags: SingleTagType[] = [
     { _id: 1, name: "JavaScript" },
     { _id: 2, name: "TypeScript" },
     { _id: 3, name: "Python" },
