@@ -14,7 +14,7 @@ const Home = async () => {
   /* <div>{session?.user?.name}</div> */
 
   return (
-    <div className="flex overflow-hidden gap-2 mt-2 mx-2">
+    <div className="flex overflow-hidden gap-2 mt-2 mx-2 scroll-container">
       <ContentArea />
       <ContentEditor />
     </div>

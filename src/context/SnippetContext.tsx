@@ -5,6 +5,8 @@ import {
   SnippetContextProps,
   SnippetProviderProps,
 } from "@/app/lib/definitions";
+import { v4 as uuidv4 } from "uuid";
+
 
 export const SnippetContext = createContext<SnippetContextProps | undefined>(
   undefined
@@ -44,7 +46,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     const fetchSnippets = async () => {
       const allNotes = [
         {
-          id: "1",
+          id: uuidv4(),
           title: "Hello World",
           isFavorite: true,
           tags: ["React", "JavaScript"],
@@ -54,7 +56,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
           creationDate: "2021-09-01",
         },
         {
-          id: "2",
+          id: uuidv4(),
           title: "Fetch Data",
           isFavorite: false,
           tags: ["React", "API"],
@@ -64,7 +66,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
           creationDate: "2021-10-01",
         },
         {
-          id: "3",
+          id: uuidv4(),
           title: "Array Map",
           isFavorite: true,
           tags: ["JavaScript", "Array"],
@@ -74,7 +76,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
           creationDate: "2021-11-01",
         },
         {
-          id: "4",
+          id: uuidv4(),
           title: "Styled Component",
           isFavorite: false,
           tags: ["React", "CSS"],
@@ -84,7 +86,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
           creationDate: "2021-12-01",
         },
         {
-          id: "5",
+          id: uuidv4(),
           title: "UseEffect Hook",
           isFavorite: true,
           tags: ["React", "Hooks"],

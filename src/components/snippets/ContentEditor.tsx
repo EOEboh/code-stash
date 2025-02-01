@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useEffect, useState } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
-import { SingleSnippetType } from "@/app/lib/definitions";
+import { LanguageType, SingleSnippetType } from "@/app/lib/definitions";
 import TagsList from "@/components/TagsList";
 import AceEditor from "react-ace";
 import { config } from "ace-builds";
@@ -10,7 +10,7 @@ config.set("basePath", "path");
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
-import { relative } from "path";
+import { languageData } from "@/app/lib/data";
 
 const ContentEditor = () => {
   const snippetContext = useContext(SnippetContext);
@@ -55,13 +55,13 @@ const ContentEditor = () => {
 
   return (
     <div
-      className={`border bg-white p-3 rounded-lg ${
+      className={`xl:sticky-editor border bg-white p-3 rounded-lg sticky top-0 ${
         isEditing ? "block" : "hidden"
       } ${
         isMobile
           ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
           : ""
-      } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px] sticky`}
+      } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px] `}
     >
       <button
         onClick={() => setIsEditing && setIsEditing(false)}
@@ -106,6 +106,44 @@ const ContentEditor = () => {
 
 export default ContentEditor;
 
+const LanguageSelector: React.FC<{
+  setLanguage: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ setLanguage }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState("JavaScript");
+
+  const handleSelect = (language: LanguageType) => {
+    setSelectedLanguage(language.label);
+    setLanguage(language.label);
+    setIsOpen(false);
+  };
+
+  return (
+    <div className="relative flex-col gap-2 p-3 w-full">
+      <button
+        className="border p-2 rounded-lg outline-none w-full text-left"
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        {selectedLanguage}
+      </button>
+
+      {isOpen && (
+        <div className="h-40 max-h-40 overflow-y-auto border rounded-lg absolute bg-white w-full z-10 custom-scrollbar">
+          {languageData.map((language) => (
+            <div
+              key={language.id}
+              className="p-2 hover:bg-gray-200 cursor-pointer"
+              onClick={() => handleSelect(language)}
+            >
+              {language.label}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
 const EditForm: React.FC<{
   singleSnippet: SingleSnippetType;
   setSingleSnippet: React.Dispatch<
@@ -138,6 +176,8 @@ const EditForm: React.FC<{
     }
   }
 
+  const [language, setLanguage] = useState("javascript");
+
   return (
     <div className="flex flex-col gap-2">
       <input
@@ -158,7 +198,10 @@ const EditForm: React.FC<{
         onKeyDown={handleKeyDown}
         onChange={updateSnippet}
       />
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-2 ">
+        <div className="self-start">
+          <LanguageSelector setLanguage={setLanguage} />
+        </div>
         <AceEditor
           placeholder="Placeholder Text"
           mode="javascript"
@@ -323,7 +366,7 @@ const TagsDisplay: React.FC<{
           customTag={customTag}
           handleCustomTagChange={handleCustomTagChange}
           handleAddCustomTag={handleAddCustomTag}
-          selectedTags={tags} // Pass selectedTags prop
+          selectedTags={tags}
         />
       )}
     </div>

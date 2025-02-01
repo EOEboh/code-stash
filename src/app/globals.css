@@ -61,9 +61,20 @@ body {
   align-items: center;
 }
 
-.sticky {
+/* Content */
+.scroll-container::-webkit-scrollbar {
+  display: none;
+}
+
+.scroll-container {
+  height: 100vh;
+  overflow: auto; /* Enable scrolling */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+.sticky-editor {
   position: -webkit-sticky; /* For Safari */
   position: sticky;
   top: 0;
-  z-index: 1000; /* Adjust as needed */
 }

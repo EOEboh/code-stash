@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { IconType } from "react-icons/lib";
 
 export type SessionType = {
   user: {
@@ -53,4 +54,10 @@ export interface SingleSnippetType {
 export interface SingleTagType {
   _id: number;
   name: string;
+}
+
+export interface LanguageType {
+  id: string;
+  label: string;
+  icon: IconType;
 }
