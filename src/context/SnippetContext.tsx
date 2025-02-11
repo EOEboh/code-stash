@@ -1,12 +1,12 @@
 "use client";
 import React, { createContext, useState, useEffect } from "react";
 import {
+  SingleLanguageType,
   SingleSnippetType,
   SnippetContextProps,
   SnippetProviderProps,
 } from "@/app/lib/definitions";
 import { v4 as uuidv4 } from "uuid";
-
 
 export const SnippetContext = createContext<SnippetContextProps | undefined>(
   undefined
@@ -21,6 +21,9 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
   const [selectedSnippet, setSelectedSnippet] =
     useState<SingleSnippetType | null>(null);
   const [isNewSnippet, setIsNewSnippet] = useState<boolean>(false);
+
+  const [selectedLanguage, setSelectedLanguage] =
+    useState<SingleLanguageType | null>(null);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
@@ -119,6 +122,8 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
         setSelectedSnippet,
         isNewSnippet,
         setIsNewSnippet,
+        selectedLanguage,
+        setSelectedLanguage,
       }}
     >
       {children}

@@ -34,6 +34,10 @@ export interface SnippetContextProps {
   >;
   isNewSnippet: boolean;
   setIsNewSnippet: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedLanguage: SingleLanguageType | null;
+  setSelectedLanguage: React.Dispatch<
+    React.SetStateAction<SingleLanguageType | null>
+  >;
 }
 
 export interface SnippetProviderProps {
@@ -56,7 +60,7 @@ export interface SingleTagType {
   name: string;
 }
 
-export interface LanguageType {
+export interface SingleLanguageType {
   id: string;
   label: string;
   icon: IconType;
