@@ -91,3 +91,8 @@ export const languageData: SingleLanguageType[] = [
     icon: SiCplusplus,
   },
 ];
+
+export const getLanguageIcon = (languageLabel: string) => {
+  const language = languageData.find((lang) => lang.label === languageLabel);
+  return language ? language.icon : null;
+};

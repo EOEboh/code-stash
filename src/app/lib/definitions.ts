@@ -23,7 +23,10 @@ export interface NavItemsType {
 export interface SnippetContextProps {
   isEditing: boolean;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleEditing: (snippet: SingleSnippetType) => void;
+  toggleEditing: (
+    snippet: SingleSnippetType,
+    snippetRef: SnippetRefType
+  ) => void;
   isMobile: boolean;
   setIsMobile: React.Dispatch<React.SetStateAction<boolean>>;
   allSnippets: SingleSnippetType[];
@@ -34,10 +37,6 @@ export interface SnippetContextProps {
   >;
   isNewSnippet: boolean;
   setIsNewSnippet: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedLanguage: SingleLanguageType | null;
-  setSelectedLanguage: React.Dispatch<
-    React.SetStateAction<SingleLanguageType | null>
-  >;
 }
 
 export interface SnippetProviderProps {
@@ -64,4 +63,10 @@ export interface SingleLanguageType {
   id: string;
   label: string;
   icon: IconType;
+}
+
+export interface SnippetRefType {
+  current: {
+    scrollIntoView: (options: ScrollIntoViewOptions) => void;
+  } | null;
 }

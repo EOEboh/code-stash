@@ -1,15 +1,15 @@
 "use client";
 
 import { Star } from "lucide-react";
-import { FaJs } from "react-icons/fa";
 import { IoMdTrash } from "react-icons/io";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
 import { SingleSnippetType } from "@/app/lib/definitions";
+import { getLanguageIcon } from "@/app/lib/data";
 
 const AllSnippets = () => {
   const snippetContextData = useContext(SnippetContext);
@@ -42,13 +42,16 @@ const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
 
   const { title, tags, description, code, language, creationDate } = snippet;
 
+  const snippetRef = useRef<HTMLDivElement>(null);
+
   return (
     <div
+      ref={snippetRef}
       className={`max-sm:w-full ${
         isEditing ? "w-full" : "w-[340px]"
       }  rounded-md py-2`}
     >
-      <SnippetHeader title={title} snippet={snippet} />
+      <SnippetHeader title={title} snippet={snippet} snippetRef={snippetRef} />
       <SnippetTags tags={tags} />
       <SnippetDate creationDate={creationDate} />
       <SnippetDescription description={description} />
@@ -61,7 +64,8 @@ const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
 const SnippetHeader: React.FC<{
   title: string;
   snippet: SingleSnippetType;
-}> = ({ title, snippet }) => {
+  snippetRef: React.RefObject<HTMLDivElement>;
+}> = ({ title, snippet, snippetRef }) => {
   const snippetContextData = useContext(SnippetContext);
   if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
@@ -72,7 +76,7 @@ const SnippetHeader: React.FC<{
     <div className="flex justify-between mx-4">
       <span
         className="font-bold text-lg w-[87%] cursor-pointer"
-        onClick={() => toggleEditing(snippet)}
+        onClick={() => toggleEditing(snippet, snippetRef)}
       >
         {title}
       </span>
@@ -118,10 +122,11 @@ const SnippetCode: React.FC<{ code: string }> = ({ code }) => {
 };
 
 const SnippetFooter: React.FC<{ language: string }> = ({ language }) => {
+  const LanguageIcon = getLanguageIcon(language);
   return (
     <div className="flex justify-between text-[13px] text-slate-400 mx-4 mt-3">
       <div className="flex gap-1 items-center">
-        <FaJs />
+        {LanguageIcon && <LanguageIcon />}
         <h3>{language}</h3>
       </div>
       <div className="flex gap-1 items-center">

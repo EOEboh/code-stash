@@ -1,10 +1,10 @@
 "use client";
 import React, { createContext, useState, useEffect } from "react";
 import {
-  SingleLanguageType,
   SingleSnippetType,
   SnippetContextProps,
   SnippetProviderProps,
+  SnippetRefType,
 } from "@/app/lib/definitions";
 import { v4 as uuidv4 } from "uuid";
 
@@ -22,9 +22,6 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     useState<SingleSnippetType | null>(null);
   const [isNewSnippet, setIsNewSnippet] = useState<boolean>(false);
 
-  const [selectedLanguage, setSelectedLanguage] =
-    useState<SingleLanguageType | null>(null);
-
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
   };
@@ -35,7 +32,10 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleEditing = (snippet: SingleSnippetType) => {
+  const toggleEditing = (
+    snippet: SingleSnippetType,
+    snippetRef: SnippetRefType
+  ) => {
     setIsEditing((prevState) => {
       if (selectedSnippet?.id === snippet.id) {
         return !prevState;
@@ -43,6 +43,10 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
       return true;
     });
     setSelectedSnippet(snippet);
+
+    if (snippetRef.current) {
+      snippetRef.current.scrollIntoView({ behavior: "smooth" });
+    }
   };
 
   useEffect(() => {
@@ -122,8 +126,6 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
         setSelectedSnippet,
         isNewSnippet,
         setIsNewSnippet,
-        selectedLanguage,
-        setSelectedLanguage,
       }}
     >
       {children}

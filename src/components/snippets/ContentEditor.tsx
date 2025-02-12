@@ -10,7 +10,7 @@ config.set("basePath", "path");
 import "ace-builds/src-noconflict/mode-java";
 import "ace-builds/src-noconflict/theme-github";
 import "ace-builds/src-noconflict/ext-language_tools";
-import { languageData } from "@/app/lib/data";
+import { getLanguageIcon, languageData } from "@/app/lib/data";
 import { Search, ChevronDown, ChevronUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -119,12 +119,7 @@ const LanguageSelector: React.FC<{
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
 
-  const {
-    selectedLanguage,
-    setSelectedLanguage,
-    allSnippets,
-    setAllSnippets,
-  } = snippetContext;
+  const { allSnippets, setAllSnippets } = snippetContext;
 
   const [isOpen, setIsOpen] = useState(false);
 
@@ -133,8 +128,6 @@ const LanguageSelector: React.FC<{
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const handleSelect = (language: SingleLanguageType) => {
-    setSelectedLanguage(language);
-
     const updatedSingleSnippet = {
       ...singleSnippet,
       language: language.label,
@@ -152,7 +145,7 @@ const LanguageSelector: React.FC<{
     setAllSnippets(updatedAllSnippets);
 
     setIsOpen(false);
-  }; 
+  };
 
   const filteredLanguages = languageData.filter((language) =>
     language.label.toLowerCase().includes(searchTerm.toLowerCase())
@@ -174,6 +167,8 @@ const LanguageSelector: React.FC<{
     };
   }, []);
 
+  const LanguageIcon = getLanguageIcon(singleSnippet?.language);
+
   return (
     <div className="relative w-32" ref={dropdownRef}>
       <button
@@ -181,10 +176,8 @@ const LanguageSelector: React.FC<{
         onClick={() => setIsOpen(!isOpen)}
       >
         <div className="flex items-center gap-2">
-          {selectedLanguage?.icon && (
-            <selectedLanguage.icon className="w-4 h-4" />
-          )}
-          <span>{selectedLanguage?.label}</span>
+          {LanguageIcon && <LanguageIcon />}
+          <span>{singleSnippet?.language}</span>
         </div>
         {isOpen ? (
           <ChevronUp className="w-4 h-4 ml-2 text-gray-400" />
