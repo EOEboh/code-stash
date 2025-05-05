@@ -4,7 +4,6 @@ import {
   SingleSnippetType,
   SnippetContextProps,
   SnippetProviderProps,
-  SnippetRefType,
 } from "@/app/lib/definitions";
 import { v4 as uuidv4 } from "uuid";
 
@@ -32,21 +31,16 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const toggleEditing = (
-    snippet: SingleSnippetType,
-    snippetRef: SnippetRefType
-  ) => {
+  const toggleEditing = (snippet: SingleSnippetType) => {
+    const isSnippetSame = selectedSnippet?.id === snippet.id;
+
     setIsEditing((prevState) => {
-      if (selectedSnippet?.id === snippet.id) {
+      if (isSnippetSame) {
         return !prevState;
       }
       return true;
     });
-    setSelectedSnippet(snippet);
-
-    if (snippetRef.current) {
-      snippetRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    setSelectedSnippet({ ...snippet });
   };
 
   useEffect(() => {
