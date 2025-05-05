@@ -6,7 +6,7 @@ import SyntaxHighlighter from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useContext, useRef } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
 import { SingleSnippetType } from "@/app/lib/definitions";
 import { getLanguageIcon } from "@/app/lib/data";
@@ -38,7 +38,7 @@ const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
   if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
-  const { isEditing } = snippetContextData;
+  const { isEditing, selectedSnippet } = snippetContextData;
 
   const { title, tags, description, code, language, creationDate } = snippet;
 
@@ -51,7 +51,13 @@ const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
         isEditing ? "w-full" : "w-[340px]"
       }  rounded-md py-2`}
     >
-      <SnippetHeader title={title} snippet={snippet} snippetRef={snippetRef} />
+      <SnippetHeader
+        title={title}
+        snippet={snippet}
+        snippetRef={snippetRef}
+        selectedSnippet={selectedSnippet}
+        isEditing={isEditing}
+      />
       <SnippetTags tags={tags} />
       <SnippetDate creationDate={creationDate} />
       <SnippetDescription description={description} />
@@ -65,18 +71,26 @@ const SnippetHeader: React.FC<{
   title: string;
   snippet: SingleSnippetType;
   snippetRef: React.RefObject<HTMLDivElement>;
-}> = ({ title, snippet, snippetRef }) => {
+  selectedSnippet: SingleSnippetType | null;
+  isEditing: boolean;
+}> = ({ title, snippet, snippetRef, selectedSnippet, isEditing }) => {
   const snippetContextData = useContext(SnippetContext);
   if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
   const { toggleEditing } = snippetContextData;
 
+  useEffect(() => {
+    if (isEditing && selectedSnippet?.id === snippet.id && snippetRef.current) {
+      snippetRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [isEditing, selectedSnippet?.id]);
+
   return (
     <div className="flex justify-between mx-4">
       <span
         className="font-bold text-lg w-[87%] cursor-pointer"
-        onClick={() => toggleEditing(snippet, snippetRef)}
+        onClick={() => toggleEditing(snippet)}
       >
         {title}
       </span>
@@ -114,7 +128,7 @@ const SnippetDescription: React.FC<{ description: string }> = ({
 const SnippetCode: React.FC<{ code: string }> = ({ code }) => {
   return (
     <div className="rounded-md overflow-hidden text-sm mt-2 mx-4">
-      <SyntaxHighlighter language="javascript" style={docco} wrapLongLines>
+      <SyntaxHighlighter language={"javascript"} style={docco} wrapLongLines>
         {code}
       </SyntaxHighlighter>
     </div>

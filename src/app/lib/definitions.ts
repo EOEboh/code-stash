@@ -23,10 +23,7 @@ export interface NavItemsType {
 export interface SnippetContextProps {
   isEditing: boolean;
   setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
-  toggleEditing: (
-    snippet: SingleSnippetType,
-    snippetRef: SnippetRefType
-  ) => void;
+  toggleEditing: (snippet: SingleSnippetType) => void;
   isMobile: boolean;
   setIsMobile: React.Dispatch<React.SetStateAction<boolean>>;
   allSnippets: SingleSnippetType[];

@@ -299,7 +299,6 @@ const EditForm: React.FC<{
           showPrintMargin={true}
           showGutter={false}
           highlightActiveLine={true}
-          value={singleSnippet?.code}
           setOptions={{
             enableBasicAutocompletion: true,
             enableLiveAutocompletion: true,
@@ -309,6 +308,12 @@ const EditForm: React.FC<{
             tabSize: 2,
           }}
           wrapEnabled
+          value={singleSnippet?.code}
+          onChange={(value) =>
+            updateSnippet({
+              target: { name: "code", value },
+            } as React.ChangeEvent<HTMLInputElement>)
+          }
         />
       </div>
 
