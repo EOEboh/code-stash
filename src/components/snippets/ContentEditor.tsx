@@ -180,9 +180,14 @@ const LanguageSelector: React.FC<{
           <span>{singleSnippet?.language}</span>
         </div>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 ml-2 text-gray-400" />
+          <>
+            <ChevronUp className="w-4 h-4 ml-2 text-gray-400" />
+          </>
         ) : (
-          <ChevronDown className="w-4 h-4 ml-2 text-gray-400" />
+          <>
+            <div>Language</div>
+            <ChevronDown className="w-4 h-4 ml-2 text-gray-400" />
+          </>
         )}
       </button>
 
