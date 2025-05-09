@@ -185,7 +185,7 @@ const LanguageSelector: React.FC<{
           </>
         ) : (
           <>
-            <div>Language</div>
+            <div>{!singleSnippet?.language && "Language"}</div>
             <ChevronDown className="w-4 h-4 ml-2 text-gray-400" />
           </>
         )}

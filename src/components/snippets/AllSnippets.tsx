@@ -18,10 +18,14 @@ const AllSnippets = () => {
     return null;
   }
 
-  const { allSnippets } = snippetContextData;
+  const { allSnippets, isEditing } = snippetContextData;
 
   return (
-    <div className="mt-4 flex flex-wrap gap-5">
+    <div
+      className={`mt-4 grid gap-5 ${
+        isEditing ? `grid-cols-1` : `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
+      }  `}
+    >
       {allSnippets.map((snippet) => (
         <SingleSnippet key={snippet.id} snippet={snippet} />
       ))}
@@ -45,12 +49,7 @@ const SingleSnippet: React.FC<{ snippet: SingleSnippetType }> = ({
   const snippetRef = useRef<HTMLDivElement>(null);
 
   return (
-    <div
-      ref={snippetRef}
-      className={`max-sm:w-full ${
-        isEditing ? "w-full" : "w-[340px]"
-      }  rounded-md py-2`}
-    >
+    <div ref={snippetRef} className={`max-sm:w-full rounded-md py-2`}>
       <SnippetHeader
         title={title}
         snippet={snippet}

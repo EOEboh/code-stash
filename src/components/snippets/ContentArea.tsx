@@ -16,7 +16,7 @@ const ContentArea = () => {
     <div
       className={`${
         isEditing ? "w-[50%]" : "w-full"
-      }  max-w-[1112px] flex flex-col gap-5`}
+      }  max-w-[1112px] flex flex-col gap-5 scroll-container`}
     >
       {/* <Tags /> */}
       <SearchBar />
