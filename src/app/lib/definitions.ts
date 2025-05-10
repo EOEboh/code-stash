@@ -60,6 +60,7 @@ export interface SingleLanguageType {
   id: string;
   label: string;
   icon: IconType;
+  value: string;
 }
 
 export interface SnippetRefType {
