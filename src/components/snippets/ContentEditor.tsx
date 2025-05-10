@@ -57,13 +57,9 @@ const ContentEditor = () => {
 
   return (
     <div
-      className={`xl:sticky-editor border bg-white p-3 rounded-lg sticky top-0 ${
+      className={`bg-white border p-3 rounded-lg ${
         isEditing ? "block" : "hidden"
-      } ${
-        isMobile
-          ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
-          : ""
-      } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px] `}
+      } ${isMobile ? "w-11/12" : "sticky top-0 w-1/2"} h-[700px] z-50`}
     >
       <button
         onClick={() => setIsEditing && setIsEditing(false)}
@@ -87,16 +83,10 @@ const ContentEditor = () => {
 
       {singleSnippet && (
         <>
+          {" "}
           <EditForm
             singleSnippet={singleSnippet}
             setSingleSnippet={setSingleSnippet}
-            allSnippets={allSnippets}
-            setAllSnippets={setAllSnippets}
-          />
-          <TagsDisplay
-            tags={singleSnippet.tags}
-            setSingleSnippet={setSingleSnippet}
-            singleSnippet={singleSnippet}
             allSnippets={allSnippets}
             setAllSnippets={setAllSnippets}
           />
@@ -321,6 +311,14 @@ const EditForm: React.FC<{
           }
         />
       </div>
+
+      <TagsDisplay
+        tags={singleSnippet.tags}
+        setSingleSnippet={setSingleSnippet}
+        singleSnippet={singleSnippet}
+        allSnippets={allSnippets}
+        setAllSnippets={setAllSnippets}
+      />
 
       <button className="bg-blue-500 text-white p-2 rounded-lg">Save</button>
     </div>
