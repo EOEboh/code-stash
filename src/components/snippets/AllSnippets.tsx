@@ -1,15 +1,16 @@
 "use client";
 
-import { Star } from "lucide-react";
+import { ChevronDown, ChevronUp, Star } from "lucide-react";
 import { IoMdTrash } from "react-icons/io";
 import SyntaxHighlighter from "react-syntax-highlighter";
 import { docco } from "react-syntax-highlighter/dist/esm/styles/hljs";
 import { dark } from "react-syntax-highlighter/dist/esm/styles/prism";
 import { oneDark } from "react-syntax-highlighter/dist/esm/styles/prism";
-import { useContext, useEffect, useRef } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
 import { SingleSnippetType } from "@/app/lib/definitions";
 import { getLanguageIcon } from "@/app/lib/data";
+import { Button } from "../ui/button";
 
 const AllSnippets = () => {
   const snippetContextData = useContext(SnippetContext);
@@ -124,12 +125,68 @@ const SnippetDescription: React.FC<{ description: string }> = ({
   return <div className="text-[13px] mx-4 mt-4">{description}</div>;
 };
 
-const SnippetCode: React.FC<{ code: string }> = ({ code }) => {
+const SnippetCode: React.FC<{
+  code: string;
+  maxLines?: number;
+  minTruncateLength?: number;
+}> = ({ code, maxLines = 5, minTruncateLength = 150 }) => {
+  const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const shouldTruncate = code.length > minTruncateLength;
+
+  const toggleExpand = () => {
+    setIsExpanded(!isExpanded);
+  };
+
   return (
     <div className="rounded-md overflow-hidden text-sm mt-2 mx-4">
-      <SyntaxHighlighter language={"javascript"} style={docco} wrapLongLines>
-        {code}
-      </SyntaxHighlighter>
+      <div
+        className={`relative ${
+          !isExpanded ? "max-h-[150px] overflow-hidden" : ""
+        }`}
+      >
+        <SyntaxHighlighter
+          language={"javascript"}
+          style={docco}
+          wrapLongLines
+          className={
+            !isExpanded && shouldTruncate ? "line-clamp-[var(--max-lines)]" : ""
+          }
+          customStyle={
+            !isExpanded && shouldTruncate
+              ? ({ "--max-lines": maxLines } as React.CSSProperties)
+              : {}
+          }
+        >
+          {code}
+        </SyntaxHighlighter>
+
+        {!isExpanded && shouldTruncate && (
+          <div className="absolute bottom-0 left-0 right-0 h-12 bg-gradient-to-t from-background to-transparent pointer-events-none" />
+        )}
+      </div>
+
+      {shouldTruncate && (
+        <div className="flex justify-center mt-2">
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={toggleExpand}
+            className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+          >
+            {isExpanded ? (
+              <>
+                <span>Show less</span>
+                <ChevronUp className="h-3 w-3" />
+              </>
+            ) : (
+              <>
+                <span>Show more</span>
+                <ChevronDown className="h-3 w-3" />
+              </>
+            )}
+          </Button>
+        </div>
+      )}
     </div>
   );
 };
