@@ -68,3 +68,16 @@ export interface SnippetRefType {
     scrollIntoView: (options: ScrollIntoViewOptions) => void;
   } | null;
 }
+
+export interface AddBtnProps {
+  openIcon?: React.ReactNode;
+  closeIcon?: React.ReactNode;
+  onOpenClick?: () => void;
+  onCloseClick?: () => void;
+  onClick?: () => void;
+  className?: string;
+  ariaLabel?: string;
+  color?: "default" | "primary" | "secondary" | "destructive";
+  size?: "default" | "sm" | "lg";
+  showOnDesktop?: boolean;
+}
