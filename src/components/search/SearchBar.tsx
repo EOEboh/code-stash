@@ -1,8 +1,6 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
-import { SnippetContextProps } from "@/app/lib/definitions";
 import { v4 as uuidv4 } from "uuid";
-import { RiStickyNoteAddFill } from "react-icons/ri";
 import AddSnippetBtnFAB from "../add-snippet/AddSnippetBtnFAB";
 import AddSnippetBtn from "../add-snippet/AddSnippetBtn";
 
