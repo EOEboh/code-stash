@@ -3,16 +3,11 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
 import { SingleLanguageType, SingleSnippetType } from "@/app/lib/definitions";
 import TagsList from "@/components/TagsList";
-import AceEditor from "react-ace";
-import { config } from "ace-builds";
-config.set("basePath", "path");
 
-import "ace-builds/src-noconflict/mode-java";
-import "ace-builds/src-noconflict/theme-github";
-import "ace-builds/src-noconflict/ext-language_tools";
 import { getLanguageIcon, languageData } from "@/app/lib/data";
 import { Search, ChevronDown, ChevronUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
+import AceEditorComponent from "./AceEditor";
 
 const ContentEditor = () => {
   const snippetContext = useContext(SnippetContext);
@@ -57,13 +52,9 @@ const ContentEditor = () => {
 
   return (
     <div
-      className={`xl:sticky-editor border bg-white p-3 rounded-lg sticky top-0 ${
+      className={`bg-white border p-3 rounded-lg ${
         isEditing ? "block" : "hidden"
-      } ${
-        isMobile
-          ? "fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50"
-          : ""
-      } ${isMobile ? "w-10/12" : "w-1/2"} h-[700px] `}
+      } ${isMobile ? "w-11/12" : "sticky top-0 w-1/2"} h-[700px] z-50`}
     >
       <button
         onClick={() => setIsEditing && setIsEditing(false)}
@@ -87,16 +78,10 @@ const ContentEditor = () => {
 
       {singleSnippet && (
         <>
+          {" "}
           <EditForm
             singleSnippet={singleSnippet}
             setSingleSnippet={setSingleSnippet}
-            allSnippets={allSnippets}
-            setAllSnippets={setAllSnippets}
-          />
-          <TagsDisplay
-            tags={singleSnippet.tags}
-            setSingleSnippet={setSingleSnippet}
-            singleSnippet={singleSnippet}
             allSnippets={allSnippets}
             setAllSnippets={setAllSnippets}
           />
@@ -113,7 +98,8 @@ const LanguageSelector: React.FC<{
   setSingleSnippet: React.Dispatch<
     React.SetStateAction<SingleSnippetType | undefined>
   >;
-}> = ({ singleSnippet, setSingleSnippet }) => {
+  setLanguageForAceEditor: React.Dispatch<React.SetStateAction<string>>;
+}> = ({ singleSnippet, setSingleSnippet, setLanguageForAceEditor }) => {
   const snippetContext = useContext(SnippetContext);
   if (!snippetContext) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
@@ -145,6 +131,7 @@ const LanguageSelector: React.FC<{
     setAllSnippets(updatedAllSnippets);
 
     setIsOpen(false);
+    setLanguageForAceEditor(language.value);
   };
 
   const filteredLanguages = languageData.filter((language) =>
@@ -180,9 +167,14 @@ const LanguageSelector: React.FC<{
           <span>{singleSnippet?.language}</span>
         </div>
         {isOpen ? (
-          <ChevronUp className="w-4 h-4 ml-2 text-gray-400" />
+          <>
+            <ChevronUp className="w-4 h-4 ml-2 text-gray-400" />
+          </>
         ) : (
-          <ChevronDown className="w-4 h-4 ml-2 text-gray-400" />
+          <>
+            <div>{!singleSnippet?.language && "Language"}</div>
+            <ChevronDown className="w-4 h-4 ml-2 text-gray-400" />
+          </>
         )}
       </button>
 
@@ -232,6 +224,9 @@ const EditForm: React.FC<{
   allSnippets: SingleSnippetType[];
   setAllSnippets: React.Dispatch<React.SetStateAction<SingleSnippetType[]>>;
 }> = ({ singleSnippet, setSingleSnippet, allSnippets, setAllSnippets }) => {
+  const [languageForAceEditor, setLanguageForAceEditor] =
+    useState<string>("javascript");
+
   function updateSnippet(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
@@ -255,6 +250,8 @@ const EditForm: React.FC<{
       event.preventDefault();
     }
   }
+
+  console.log("languageForAceEditor", languageForAceEditor);
 
   return (
     <div className="flex flex-col gap-2">
@@ -281,41 +278,23 @@ const EditForm: React.FC<{
           <LanguageSelector
             singleSnippet={singleSnippet}
             setSingleSnippet={setSingleSnippet}
+            setLanguageForAceEditor={setLanguageForAceEditor}
           />
         </div>
-        <AceEditor
-          placeholder="Placeholder Text"
-          mode="javascript"
-          theme="solarized_dark"
-          name="code"
-          style={{
-            width: "500px",
-            maxWidth: "100%",
-            overflow: "hidden",
-            height: "300px",
-          }}
-          fontSize={14}
-          lineHeight={24}
-          showPrintMargin={true}
-          showGutter={false}
-          highlightActiveLine={true}
-          setOptions={{
-            enableBasicAutocompletion: true,
-            enableLiveAutocompletion: true,
-            enableSnippets: true,
-            enableMobileMenu: true,
-            showLineNumbers: true,
-            tabSize: 2,
-          }}
-          wrapEnabled
-          value={singleSnippet?.code}
-          onChange={(value) =>
-            updateSnippet({
-              target: { name: "code", value },
-            } as React.ChangeEvent<HTMLInputElement>)
-          }
+        <AceEditorComponent
+          languageForAceEditor={languageForAceEditor}
+          singleSnippet={singleSnippet}
+          onUpdate={updateSnippet}
         />
       </div>
+
+      <TagsDisplay
+        tags={singleSnippet.tags}
+        setSingleSnippet={setSingleSnippet}
+        singleSnippet={singleSnippet}
+        allSnippets={allSnippets}
+        setAllSnippets={setAllSnippets}
+      />
 
       <button className="bg-blue-500 text-white p-2 rounded-lg">Save</button>
     </div>

@@ -1,8 +1,7 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
-import ContentArea from "@/components/snippets/ContentArea";
-import ContentEditor from "@/components/snippets/ContentEditor";
+import HomeContent from "@/components/home/HomeContent";
 
 const Home = async () => {
   const session = await auth();
@@ -14,10 +13,9 @@ const Home = async () => {
   /* <div>{session?.user?.name}</div> */
 
   return (
-    <div className="flex overflow-hidden gap-2 mt-2 mx-2 scroll-container">
-      <ContentArea />
-      <ContentEditor />
-    </div>
+    <Fragment>
+      <HomeContent />
+    </Fragment>
   );
 };
 

@@ -11,12 +11,12 @@ const ContentArea = () => {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
 
-  const { isEditing } = snippetContextData;
+  const { isEditing, isMobile } = snippetContextData;
   return (
     <div
       className={`${
-        isEditing ? "w-[50%]" : "w-full"
-      }  max-w-[1112px] flex flex-col gap-5`}
+        isEditing && !isMobile ? "w-[50%]" : "w-full"
+      }  max-w-[1112px] flex flex-col gap-5 scroll-container`}
     >
       {/* <Tags /> */}
       <SearchBar />

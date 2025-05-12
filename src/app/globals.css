@@ -68,7 +68,7 @@ body {
 
 .scroll-container {
   height: 100vh;
-  overflow: auto; /* Enable scrolling */
+  overflow-y: auto; /* Enable scrolling */
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none; /* Firefox */
 }

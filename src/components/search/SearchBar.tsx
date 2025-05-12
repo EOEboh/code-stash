@@ -1,7 +1,8 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { SnippetContext } from "@/context/SnippetContext";
-import { SnippetContextProps } from "@/app/lib/definitions";
 import { v4 as uuidv4 } from "uuid";
+import AddSnippetBtnFAB from "../add-snippet/AddSnippetBtnFAB";
+import AddSnippetBtn from "../add-snippet/AddSnippetBtn";
 
 const SearchBar = ({}) => {
   // const [searchTerm, setSearchTerm] = useState("");
@@ -58,9 +59,15 @@ const SearchBar = ({}) => {
           placeholder="Search snippets..."
           className="p-2 rounded-md border border-gray-300"
         />
-
-        <button onClick={createNewSnippet}>Add Snippet</button>
+        <AddSnippetBtn
+          onOpenClick={createNewSnippet}
+          onCloseClick={() => setIsEditing && setIsEditing(false)}
+        />
       </div>
+      <AddSnippetBtnFAB
+        onOpenClick={createNewSnippet}
+        onCloseClick={() => setIsEditing && setIsEditing(false)}
+      />
     </div>
   );
 };

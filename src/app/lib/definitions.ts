@@ -60,10 +60,24 @@ export interface SingleLanguageType {
   id: string;
   label: string;
   icon: IconType;
+  value: string;
 }
 
 export interface SnippetRefType {
   current: {
     scrollIntoView: (options: ScrollIntoViewOptions) => void;
   } | null;
+}
+
+export interface AddBtnProps {
+  openIcon?: React.ReactNode;
+  closeIcon?: React.ReactNode;
+  onOpenClick?: () => void;
+  onCloseClick?: () => void;
+  onClick?: () => void;
+  className?: string;
+  ariaLabel?: string;
+  color?: "default" | "primary" | "secondary" | "destructive";
+  size?: "default" | "sm" | "lg";
+  showOnDesktop?: boolean;
 }
