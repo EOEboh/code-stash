@@ -3,6 +3,7 @@ import { SnippetContext } from "@/context/SnippetContext";
 import { v4 as uuidv4 } from "uuid";
 import AddSnippetBtnFAB from "../add-snippet/AddSnippetBtnFAB";
 import AddSnippetBtn from "../add-snippet/AddSnippetBtn";
+import { EditingState } from "@/app/lib/enums";
 
 const SearchBar = ({}) => {
   // const [searchTerm, setSearchTerm] = useState("");
@@ -25,7 +26,7 @@ const SearchBar = ({}) => {
   if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
-  const { setIsEditing, setSelectedSnippet, setIsNewSnippet } =
+  const { isEditing, setIsEditing, setSelectedSnippet, setIsNewSnippet } =
     snippetContextData;
 
   function createNewSnippet() {
@@ -46,7 +47,7 @@ const SearchBar = ({}) => {
 
     setIsNewSnippet(true);
     setSelectedSnippet(newSingleSnippet);
-    setIsEditing(true);
+    setIsEditing(EditingState.NEW_SNIPPET);
   }
 
   return (
@@ -60,13 +61,15 @@ const SearchBar = ({}) => {
           className="p-2 rounded-md border border-gray-300"
         />
         <AddSnippetBtn
+          isEditing={isEditing}
           onOpenClick={createNewSnippet}
-          onCloseClick={() => setIsEditing && setIsEditing(false)}
+          onCloseClick={() => setIsEditing(EditingState.NONE)}
         />
       </div>
       <AddSnippetBtnFAB
+        isEditing={isEditing}
         onOpenClick={createNewSnippet}
-        onCloseClick={() => setIsEditing && setIsEditing(false)}
+        onCloseClick={() => setIsEditing && setIsEditing(EditingState.NONE)}
       />
     </div>
   );

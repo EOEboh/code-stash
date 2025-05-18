@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import ContentArea from "../snippets/ContentArea";
 import ContentEditor from "../snippets/ContentEditor";
 import { SnippetContext } from "@/context/SnippetContext";
+import { EditingState } from "@/app/lib/enums";
 
 const HomeContent = () => {
   const snippetContext = useContext(SnippetContext);
@@ -19,11 +20,12 @@ const HomeContent = () => {
         {!isMobile && <ContentEditor />}
       </div>
 
-      {isMobile && isEditing && (
-        <div className="fixed inset-0 z-40 bg-black/40 flex items-center justify-center">
-          <ContentEditor />
-        </div>
-      )}
+      {(isMobile && isEditing === EditingState.EXISTING_SNIPPET) ||
+        (isMobile && isEditing === EditingState.NEW_SNIPPET && (
+          <div className="fixed inset-0 z-40 bg-black/40 flex items-center justify-center">
+            <ContentEditor />
+          </div>
+        ))}
     </>
   );
 };

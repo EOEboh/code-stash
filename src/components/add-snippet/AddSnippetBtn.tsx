@@ -2,18 +2,24 @@
 
 import { Button } from "@/components/ui/button";
 import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { AddBtnProps } from "@/app/lib/definitions";
+import { EditingState } from "@/app/lib/enums";
 
 const AddSnippetBtn: React.FC<AddBtnProps> = ({
   openIcon = <Plus className="h-6 w-6" />,
   closeIcon = <X className="h-6 w-6" />,
+  isEditing,
   onClick,
   onOpenClick,
   onCloseClick,
   ariaLabel = "Add snippet button desktop",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  useEffect(() => {
+    setIsOpen(isEditing === EditingState.NEW_SNIPPET);
+  }, [isEditing]);
 
   const handleClick = () => {
     const newState = !isOpen;

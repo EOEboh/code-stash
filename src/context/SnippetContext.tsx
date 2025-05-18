@@ -6,6 +6,7 @@ import {
   SnippetProviderProps,
 } from "@/app/lib/definitions";
 import { v4 as uuidv4 } from "uuid";
+import { EditingState } from "@/app/lib/enums";
 
 export const SnippetContext = createContext<SnippetContextProps | undefined>(
   undefined
@@ -14,7 +15,7 @@ export const SnippetContext = createContext<SnippetContextProps | undefined>(
 export const SnippetProvider: React.FC<SnippetProviderProps> = ({
   children,
 }) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<EditingState>(EditingState.NONE);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [allSnippets, setAllSnippets] = useState<SingleSnippetType[]>([]);
   const [selectedSnippet, setSelectedSnippet] =
@@ -36,9 +37,11 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
 
     setIsEditing((prevState) => {
       if (isSnippetSame) {
-        return !prevState;
+        return prevState === EditingState.EXISTING_SNIPPET
+          ? EditingState.NONE
+          : EditingState.EXISTING_SNIPPET;
       }
-      return true;
+      return EditingState.EXISTING_SNIPPET;
     });
     setSelectedSnippet({ ...snippet });
   };
@@ -91,7 +94,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
             if (!snippetContextData) {
               throw new Error("SnippetContext must be used within a SnippetProvider");
             }
-            const { setIsEditing, setSelectedSnippet, setIsNewSnippet } =
+            const { setSelectedSnippet, setIsNewSnippet } =
               snippetContextData;
           
             function createNewSnippet() {
@@ -112,31 +115,10 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
           
               setIsNewSnippet(true);
               setSelectedSnippet(newSingleSnippet);
-              setIsEditing(true);
+              
             }
           
-            return (
-              <div className="max-w-full p-3 rounded-lg flex flex-col md:flex-row gap-5 bg-yellow-900">
-                <div className="flex flex-wrap justify-between flex-1">
-                  <input
-                    type="text"
-                    value={""}
-                    onChange={() => {}}
-                    placeholder="Search snippets..."
-                    className="p-2 rounded-md border border-gray-300"
-                  />
-                  <AddSnippetBtn
-                    onOpenClick={createNewSnippet}
-                    onCloseClick={() => setIsEditing && setIsEditing(false)}
-                  />
-                </div>
-                <AddSnippetBtnFAB
-                  onOpenClick={createNewSnippet}
-                  onCloseClick={() => setIsEditing && setIsEditing(false)}
-                />
-              </div>
-            );
-          };
+      
           
           export default SearchBar;
           `,

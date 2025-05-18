@@ -8,6 +8,7 @@ import { getLanguageIcon, languageData } from "@/app/lib/data";
 import { Search, ChevronDown, ChevronUp } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import AceEditorComponent from "./AceEditor";
+import { EditingState } from "@/app/lib/enums";
 
 const ContentEditor = () => {
   const snippetContext = useContext(SnippetContext);
@@ -53,11 +54,14 @@ const ContentEditor = () => {
   return (
     <div
       className={`bg-white border p-3 rounded-lg ${
-        isEditing ? "block" : "hidden"
+        isEditing === EditingState.EXISTING_SNIPPET ||
+        isEditing === EditingState.NEW_SNIPPET
+          ? "block"
+          : "hidden"
       } ${isMobile ? "w-11/12" : "sticky top-0 w-1/2"} h-[700px] z-50`}
     >
       <button
-        onClick={() => setIsEditing && setIsEditing(false)}
+        onClick={() => setIsEditing && setIsEditing(EditingState.NONE)}
         className="flex items-center gap-2 mb-2"
       >
         <svg
