@@ -45,6 +45,7 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     });
     setSelectedSnippet({ ...snippet });
   };
+  console.log("isEditing", isEditing);
 
   useEffect(() => {
     const fetchSnippets = async () => {

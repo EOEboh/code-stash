@@ -25,7 +25,10 @@ const AllSnippets = () => {
   return (
     <div
       className={`mt-4 grid gap-5 ${
-        isEditing ? `grid-cols-1` : `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
+        isEditing === EditingState.EXISTING_SNIPPET ||
+        isEditing === EditingState.NEW_SNIPPET
+          ? `grid-cols-1`
+          : `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
       }  `}
     >
       {allSnippets.map((snippet) => (

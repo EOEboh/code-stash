@@ -20,12 +20,13 @@ const HomeContent = () => {
         {!isMobile && <ContentEditor />}
       </div>
 
-      {(isMobile && isEditing === EditingState.EXISTING_SNIPPET) ||
-        (isMobile && isEditing === EditingState.NEW_SNIPPET && (
+      {isMobile &&
+        (isEditing === EditingState.EXISTING_SNIPPET ||
+          isEditing === EditingState.NEW_SNIPPET) && (
           <div className="fixed inset-0 z-40 bg-black/40 flex items-center justify-center">
             <ContentEditor />
           </div>
-        ))}
+        )}
     </>
   );
 };
