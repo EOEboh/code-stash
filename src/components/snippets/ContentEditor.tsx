@@ -10,6 +10,8 @@ import { Input } from "@/components/ui/input";
 import AceEditorComponent from "./AceEditor";
 import { EditingState } from "@/app/lib/enums";
 
+import { addSnippetAction } from "@/app/lib/snippets/actions";
+
 const ContentEditor = () => {
   const snippetContext = useContext(SnippetContext);
   if (!snippetContext) {
@@ -88,6 +90,7 @@ const ContentEditor = () => {
             setSingleSnippet={setSingleSnippet}
             allSnippets={allSnippets}
             setAllSnippets={setAllSnippets}
+            setIsEditing={setIsEditing}
           />
         </>
       )}
@@ -163,6 +166,7 @@ const LanguageSelector: React.FC<{
   return (
     <div className="relative w-32" ref={dropdownRef}>
       <button
+        type="button"
         className="w-full px-4 py-2 text-sm font-medium text-left text-gray-700 bg-white border border-gray-300 rounded-md shadow-sm hover:bg-gray-50 focus:outline-none flex justify-between items-center"
         onClick={() => setIsOpen(!isOpen)}
       >
@@ -227,7 +231,14 @@ const EditForm: React.FC<{
   >;
   allSnippets: SingleSnippetType[];
   setAllSnippets: React.Dispatch<React.SetStateAction<SingleSnippetType[]>>;
-}> = ({ singleSnippet, setSingleSnippet, allSnippets, setAllSnippets }) => {
+  setIsEditing: React.Dispatch<React.SetStateAction<EditingState>>;
+}> = ({
+  singleSnippet,
+  setSingleSnippet,
+  allSnippets,
+  setAllSnippets,
+  setIsEditing,
+}) => {
   const [languageForAceEditor, setLanguageForAceEditor] =
     useState<string>("javascript");
 
@@ -255,53 +266,74 @@ const EditForm: React.FC<{
     }
   }
 
-  console.log("languageForAceEditor", languageForAceEditor);
+  const handleSave = async () => {
+    if (!singleSnippet) return;
+
+    const newSnippet = {
+      id: singleSnippet.id || new Date().toISOString(),
+      _id: singleSnippet._id, // for backend
+      title: singleSnippet.title,
+      isFavorite: singleSnippet.isFavorite,
+      tags: singleSnippet.tags,
+      description: singleSnippet.description,
+      code: singleSnippet.code,
+      language: singleSnippet.language,
+      creationDate: new Date().toISOString(),
+    };
+    await addSnippetAction(newSnippet);
+
+    setIsEditing(EditingState.NONE);
+  };
 
   return (
-    <div className="flex flex-col gap-2">
-      <input
-        type="text"
-        name="title"
-        placeholder="Title"
-        className="border p-2 rounded-lg outline-none "
-        value={singleSnippet?.title}
-        onKeyDown={handleKeyDown}
-        onChange={updateSnippet}
-      />
+    <form action={handleSave} className="w-full">
+      <div className="flex flex-col gap-2">
+        <input
+          type="text"
+          name="title"
+          placeholder="Title"
+          className="border p-2 rounded-lg outline-none "
+          value={singleSnippet.title}
+          onKeyDown={handleKeyDown}
+          onChange={updateSnippet}
+        />
 
-      <textarea
-        name="description"
-        placeholder="Description"
-        className="border p-2 rounded-lg outline-none resize-none"
-        value={singleSnippet?.description}
-        onKeyDown={handleKeyDown}
-        onChange={updateSnippet}
-      />
-      <div className="flex flex-col gap-2 ">
-        <div className="self-start">
-          <LanguageSelector
+        <textarea
+          name="description"
+          placeholder="Description"
+          className="border p-2 rounded-lg outline-none resize-none"
+          value={singleSnippet.description}
+          onKeyDown={handleKeyDown}
+          onChange={updateSnippet}
+        />
+        <div className="flex flex-col gap-2 ">
+          <div className="self-start">
+            <LanguageSelector
+              singleSnippet={singleSnippet}
+              setSingleSnippet={setSingleSnippet}
+              setLanguageForAceEditor={setLanguageForAceEditor}
+            />
+          </div>
+          <AceEditorComponent
+            languageForAceEditor={languageForAceEditor}
             singleSnippet={singleSnippet}
-            setSingleSnippet={setSingleSnippet}
-            setLanguageForAceEditor={setLanguageForAceEditor}
+            onUpdate={updateSnippet}
           />
         </div>
-        <AceEditorComponent
-          languageForAceEditor={languageForAceEditor}
+
+        <TagsDisplay
+          tags={singleSnippet.tags}
+          setSingleSnippet={setSingleSnippet}
           singleSnippet={singleSnippet}
-          onUpdate={updateSnippet}
+          allSnippets={allSnippets}
+          setAllSnippets={setAllSnippets}
         />
+
+        <button className="bg-blue-500 text-white p-2 rounded-lg" type="submit">
+          Save
+        </button>
       </div>
-
-      <TagsDisplay
-        tags={singleSnippet.tags}
-        setSingleSnippet={setSingleSnippet}
-        singleSnippet={singleSnippet}
-        allSnippets={allSnippets}
-        setAllSnippets={setAllSnippets}
-      />
-
-      <button className="bg-blue-500 text-white p-2 rounded-lg">Save</button>
-    </div>
+    </form>
   );
 };
 

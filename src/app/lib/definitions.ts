@@ -42,7 +42,8 @@ export interface SnippetProviderProps {
 }
 
 export interface SingleSnippetType {
-  id: string;
+  id?: string; // for frontend
+  _id?: string; // for backend
   title: string;
   isFavorite: boolean;
   tags: string[];
