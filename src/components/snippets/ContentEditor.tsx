@@ -423,7 +423,7 @@ const TagsDisplay: React.FC<{
             className="bg-gray-200 text-gray-700 px-2 py-1 rounded-lg flex items-center gap-1"
           >
             {tag}
-            <button onClick={() => removeTag(tag)}>
+            <button type="button" onClick={() => removeTag(tag)}>
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="16"
@@ -444,7 +444,7 @@ const TagsDisplay: React.FC<{
         ))
       )}
       {isHover && (
-        <button onClick={toggleTagsList}>
+        <button type="button" onClick={toggleTagsList}>
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
