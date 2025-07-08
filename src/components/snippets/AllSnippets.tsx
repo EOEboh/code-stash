@@ -32,7 +32,7 @@ const AllSnippets = () => {
       }  `}
     >
       {allSnippets.map((snippet) => (
-        <SingleSnippet key={snippet.id} snippet={snippet} />
+        <SingleSnippet key={snippet.id || snippet._id} snippet={snippet} />
       ))}
     </div>
   );

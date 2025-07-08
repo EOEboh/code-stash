@@ -33,8 +33,6 @@ export interface SnippetContextProps {
   setSelectedSnippet: React.Dispatch<
     React.SetStateAction<SingleSnippetType | null>
   >;
-  isNewSnippet: boolean;
-  setIsNewSnippet: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface SnippetProviderProps {
@@ -42,8 +40,8 @@ export interface SnippetProviderProps {
 }
 
 export interface SingleSnippetType {
-  id?: string; // for frontend
-  _id?: string; // for backend
+  id: string;
+  _id?: number;
   title: string;
   isFavorite: boolean;
   tags: string[];

@@ -20,7 +20,6 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
   const [allSnippets, setAllSnippets] = useState<SingleSnippetType[]>([]);
   const [selectedSnippet, setSelectedSnippet] =
     useState<SingleSnippetType | null>(null);
-  const [isNewSnippet, setIsNewSnippet] = useState<boolean>(false);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
@@ -30,6 +29,21 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     handleResize();
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const fetchSnippets = async () => {
+      const res = await fetch("/api/snippets");
+      const data = await res.json();
+
+      const normalized = data.map((snippet: SingleSnippetType) => ({
+        ...snippet,
+        id: snippet._id?.toString() ?? "",
+      }));
+
+      setAllSnippets(normalized);
+    };
+    fetchSnippets();
   }, []);
 
   const toggleEditing = (snippet: SingleSnippetType) => {
@@ -47,15 +61,6 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
   };
   console.log("isEditing", isEditing);
 
-  useEffect(() => {
-    const fetchSnippets = async () => {
-      const res = await fetch("/api/snippets");
-      const data = await res.json();
-      setAllSnippets(data);
-    };
-    fetchSnippets();
-  }, []);
-
   return (
     <SnippetContext.Provider
       value={{
@@ -68,8 +73,6 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
         setAllSnippets,
         selectedSnippet,
         setSelectedSnippet,
-        isNewSnippet,
-        setIsNewSnippet,
       }}
     >
       {children}

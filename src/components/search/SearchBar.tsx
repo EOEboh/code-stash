@@ -26,8 +26,7 @@ const SearchBar = ({}) => {
   if (!snippetContextData) {
     throw new Error("SnippetContext must be used within a SnippetProvider");
   }
-  const { isEditing, setIsEditing, setSelectedSnippet, setIsNewSnippet } =
-    snippetContextData;
+  const { isEditing, setIsEditing, setSelectedSnippet } = snippetContextData;
 
   function createNewSnippet() {
     const newSingleSnippet = {
@@ -45,7 +44,6 @@ const SearchBar = ({}) => {
     //   newSingleSnippet.title = "Untitled Snippet";
     // }
 
-    setIsNewSnippet(true);
     setSelectedSnippet(newSingleSnippet);
     setIsEditing(EditingState.NEW_SNIPPET);
   }

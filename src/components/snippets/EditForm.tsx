@@ -4,7 +4,8 @@ import TagsDisplay from "./TagsDisplay";
 import LanguageSelector from "./LanguageSelector";
 import { SingleSnippetType } from "@/app/lib/definitions";
 import { EditingState } from "@/app/lib/enums";
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { v4 as uuidv4 } from "uuid";
 
 const EditForm: React.FC<{
   singleSnippet: SingleSnippetType;
@@ -23,21 +24,22 @@ const EditForm: React.FC<{
 }) => {
   const [languageForAceEditor, setLanguageForAceEditor] =
     useState<string>("javascript");
+  const [isPending, startTransition] = useTransition();
+  const isEditingExisting = !!singleSnippet._id;
 
   function updateSnippet(
     event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) {
     const { name, value } = event.target;
-    const newSingleSnippet = { ...singleSnippet, [name]: value };
-    setSingleSnippet(newSingleSnippet);
+    const updatedSnippet = { ...singleSnippet, [name]: value };
+    setSingleSnippet(updatedSnippet);
 
-    const newAllSnippets = allSnippets.map((snippet) => {
-      if (snippet.id === singleSnippet.id) {
-        return newSingleSnippet;
-      }
-      return snippet;
-    });
-    setAllSnippets(newAllSnippets);
+    if (isEditingExisting) {
+      const updatedAll = allSnippets.map((snippet) =>
+        snippet.id === singleSnippet.id ? updatedSnippet : snippet
+      );
+      setAllSnippets(updatedAll);
+    }
   }
 
   function handleKeyDown(
@@ -48,24 +50,63 @@ const EditForm: React.FC<{
     }
   }
 
-  const handleSave = async () => {
+  const handleSave = () => {
     if (!singleSnippet) return;
 
-    const newSnippet = {
-      id: singleSnippet.id || new Date().toISOString(),
-      _id: singleSnippet._id, // for backend
-      title: singleSnippet.title,
-      isFavorite: singleSnippet.isFavorite,
-      tags: singleSnippet.tags,
-      description: singleSnippet.description,
-      code: singleSnippet.code,
-      language: singleSnippet.language,
+    const generatedId = singleSnippet.id || uuidv4();
+
+    const payload: SingleSnippetType = {
+      ...singleSnippet,
+      id: generatedId,
       creationDate: new Date().toISOString(),
     };
-    await addSnippetAction(newSnippet);
 
-    setIsEditing(EditingState.NONE);
+    if (isEditingExisting) {
+      const originalSnippet = allSnippets.find(
+        (snippet) => snippet.id === generatedId
+      );
+
+      const updatedAll = allSnippets.map((snippet) =>
+        snippet.id === generatedId ? payload : snippet
+      );
+      setAllSnippets(updatedAll);
+      setIsEditing(EditingState.NONE);
+
+      startTransition(async () => {
+        try {
+          await addSnippetAction(payload);
+        } catch (error) {
+          console.error("Failed to save snippet:", error);
+
+          if (originalSnippet) {
+            const rolledBack = allSnippets.map((snippet) =>
+              snippet.id === generatedId ? originalSnippet : snippet
+            );
+            setAllSnippets(rolledBack);
+          }
+
+          alert("Failed to save changes. Please try again.");
+        }
+      });
+    } else {
+      // New snippet
+      startTransition(async () => {
+        try {
+          const newSnippet = await addSnippetAction(payload);
+          setAllSnippets([...allSnippets, newSnippet]);
+          setSingleSnippet(undefined);
+
+          setIsEditing(EditingState.NONE);
+        } catch (error) {
+          console.error("Failed to create snippet:", error);
+          alert("Failed to create snippet. Please try again.");
+        }
+      });
+    }
   };
+
+  console.log("allSnippets", allSnippets);
+  console.log("singleSnippet.id", singleSnippet.id);
 
   return (
     <form action={handleSave} className="w-full">
@@ -111,8 +152,12 @@ const EditForm: React.FC<{
           setAllSnippets={setAllSnippets}
         />
 
-        <button className="bg-blue-500 text-white p-2 rounded-lg" type="submit">
-          Save
+        <button
+          className="bg-blue-500 text-white p-2 rounded-lg"
+          type="submit"
+          disabled={isPending}
+        >
+          {isPending ? "Saving..." : "Save"}
         </button>
       </div>
     </form>

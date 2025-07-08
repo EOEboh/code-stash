@@ -19,8 +19,6 @@ const ContentEditor = () => {
     selectedSnippet,
     allSnippets,
     setAllSnippets,
-    isNewSnippet,
-    setIsNewSnippet,
   } = snippetContext;
 
   const [singleSnippet, setSingleSnippet] = useState<
@@ -28,24 +26,10 @@ const ContentEditor = () => {
   >(undefined);
 
   useEffect(() => {
-    if (isEditing) {
-      if (selectedSnippet) {
-        setSingleSnippet(selectedSnippet);
-      }
+    if (isEditing && selectedSnippet) {
+      setSingleSnippet({ ...selectedSnippet }); // <-- clone to avoid shared reference
     }
   }, [isEditing, selectedSnippet]);
-
-  useEffect(() => {
-    if (isNewSnippet) {
-      if (singleSnippet && singleSnippet.title !== "") {
-        setAllSnippets([...allSnippets, singleSnippet]);
-
-        setIsNewSnippet(false);
-      }
-    }
-  }, [singleSnippet]);
-
-  // console.log("singleSnippet", singleSnippet);
 
   return (
     <div
