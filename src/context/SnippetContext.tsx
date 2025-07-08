@@ -5,7 +5,8 @@ import {
   SnippetContextProps,
   SnippetProviderProps,
 } from "@/app/lib/definitions";
-import { v4 as uuidv4 } from "uuid";
+
+import { EditingState } from "@/app/lib/enums";
 
 export const SnippetContext = createContext<SnippetContextProps | undefined>(
   undefined
@@ -14,12 +15,11 @@ export const SnippetContext = createContext<SnippetContextProps | undefined>(
 export const SnippetProvider: React.FC<SnippetProviderProps> = ({
   children,
 }) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
+  const [isEditing, setIsEditing] = useState<EditingState>(EditingState.NONE);
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const [allSnippets, setAllSnippets] = useState<SingleSnippetType[]>([]);
   const [selectedSnippet, setSelectedSnippet] =
     useState<SingleSnippetType | null>(null);
-  const [isNewSnippet, setIsNewSnippet] = useState<boolean>(false);
 
   const handleResize = () => {
     setIsMobile(window.innerWidth < 768);
@@ -31,157 +31,35 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const fetchSnippets = async () => {
+      const res = await fetch("/api/snippets");
+      const data = await res.json();
+
+      const normalized = data.map((snippet: SingleSnippetType) => ({
+        ...snippet,
+        id: snippet._id?.toString() ?? "",
+      }));
+
+      setAllSnippets(normalized);
+    };
+    fetchSnippets();
+  }, []);
+
   const toggleEditing = (snippet: SingleSnippetType) => {
     const isSnippetSame = selectedSnippet?.id === snippet.id;
 
     setIsEditing((prevState) => {
       if (isSnippetSame) {
-        return !prevState;
+        return prevState === EditingState.EXISTING_SNIPPET
+          ? EditingState.NONE
+          : EditingState.EXISTING_SNIPPET;
       }
-      return true;
+      return EditingState.EXISTING_SNIPPET;
     });
     setSelectedSnippet({ ...snippet });
   };
-
-  useEffect(() => {
-    const fetchSnippets = async () => {
-      const allNotes = [
-        {
-          id: uuidv4(),
-          title: "Hello World",
-          isFavorite: true,
-          tags: ["React", "JavaScript"],
-          description: "A simple hello world snippet",
-          code: `console.log("Hello World")`,
-          language: "TypeScript",
-          creationDate: "2021-09-01",
-        },
-        {
-          id: uuidv4(),
-          title: "Fetch Data",
-          isFavorite: false,
-          tags: ["React", "API"],
-          description: "Snippet to fetch data from an API",
-          code: `import React, { useState, useContext } from "react";
-          import { SnippetContext } from "@/context/SnippetContext";
-          import { SnippetContextProps } from "@/app/lib/definitions";
-          import { v4 as uuidv4 } from "uuid";
-          import { RiStickyNoteAddFill } from "react-icons/ri";
-          import AddSnippetBtnFAB from "../add-snippet/AddSnippetBtnFAB";
-          import AddSnippetBtn from "../add-snippet/AddSnippetBtn";
-          
-          const SearchBar = ({}) => {
-            // const [searchTerm, setSearchTerm] = useState("");
-          
-            // const handleSearch = (event: React.ChangeEvent<HTMLInputElement>) => {
-            //   const term = event.target.value.toLowerCase();
-            //   setSearchTerm(term);
-            //   const filteredSnippets = allSnippets.filter(
-            //     (snippet) =>
-            //       snippet.title.toLowerCase().includes(term) ||
-            //       snippet.description.toLowerCase().includes(term) ||
-            //       snippet.tags.some((tag) => tag.toLowerCase().includes(term))
-            //   );
-            //   console.log("filteredSnippets", filteredSnippets);
-          
-            //   setAllSnippets(filteredSnippets);
-            // };
-          
-            const snippetContextData = useContext(SnippetContext);
-            if (!snippetContextData) {
-              throw new Error("SnippetContext must be used within a SnippetProvider");
-            }
-            const { setIsEditing, setSelectedSnippet, setIsNewSnippet } =
-              snippetContextData;
-          
-            function createNewSnippet() {
-              const newSingleSnippet = {
-                id: uuidv4(),
-                title: "",
-                isFavorite: false,
-                tags: [],
-                description: "",
-                code: "",
-                language: "",
-                creationDate: "",
-              };
-          
-              // if (newSingleSnippet.title === "") {
-              //   newSingleSnippet.title = "Untitled Snippet";
-              // }
-          
-              setIsNewSnippet(true);
-              setSelectedSnippet(newSingleSnippet);
-              setIsEditing(true);
-            }
-          
-            return (
-              <div className="max-w-full p-3 rounded-lg flex flex-col md:flex-row gap-5 bg-yellow-900">
-                <div className="flex flex-wrap justify-between flex-1">
-                  <input
-                    type="text"
-                    value={""}
-                    onChange={() => {}}
-                    placeholder="Search snippets..."
-                    className="p-2 rounded-md border border-gray-300"
-                  />
-                  <AddSnippetBtn
-                    onOpenClick={createNewSnippet}
-                    onCloseClick={() => setIsEditing && setIsEditing(false)}
-                  />
-                </div>
-                <AddSnippetBtnFAB
-                  onOpenClick={createNewSnippet}
-                  onCloseClick={() => setIsEditing && setIsEditing(false)}
-                />
-              </div>
-            );
-          };
-          
-          export default SearchBar;
-          `,
-          language: "JavaScript",
-          creationDate: "2021-10-01",
-        },
-        {
-          id: uuidv4(),
-          title: "Array Map",
-          isFavorite: true,
-          tags: ["JavaScript", "Array"],
-          description: "Using map function on an array",
-          code: `const numbers = [1, 2, 3]; const doubled = numbers.map(num => num * 2); console.log(doubled);`,
-          language: "JavaScript",
-          creationDate: "2021-11-01",
-        },
-        {
-          id: uuidv4(),
-          title: "Styled Component",
-          isFavorite: false,
-          tags: ["React", "CSS"],
-          description: "Creating a styled component",
-          code: `import styled from 'styled-components'; const Button = styled.button\`background: blue; color: white;\`;`,
-          language: "TypeScript",
-          creationDate: "2021-12-01",
-        },
-        {
-          id: uuidv4(),
-          title: "UseEffect Hook",
-          isFavorite: true,
-          tags: ["React", "Hooks"],
-          description: "Using useEffect hook in React",
-          code: `useEffect(() => { console.log('Component mounted'); }, []);`,
-          language: "TypeScript",
-          creationDate: "2022-01-01",
-        },
-      ];
-
-      setTimeout(() => {
-        setAllSnippets(allNotes);
-      }, 2000);
-    };
-
-    fetchSnippets();
-  }, []);
+  console.log("isEditing", isEditing);
 
   return (
     <SnippetContext.Provider
@@ -195,8 +73,6 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
         setAllSnippets,
         selectedSnippet,
         setSelectedSnippet,
-        isNewSnippet,
-        setIsNewSnippet,
       }}
     >
       {children}

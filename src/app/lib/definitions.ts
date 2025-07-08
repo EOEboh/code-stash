@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { IconType } from "react-icons/lib";
+import { EditingState } from "./enums";
 
 export type SessionType = {
   user: {
@@ -21,8 +22,8 @@ export interface NavItemsType {
 }
 
 export interface SnippetContextProps {
-  isEditing: boolean;
-  setIsEditing: React.Dispatch<React.SetStateAction<boolean>>;
+  isEditing: EditingState;
+  setIsEditing: React.Dispatch<React.SetStateAction<EditingState>>;
   toggleEditing: (snippet: SingleSnippetType) => void;
   isMobile: boolean;
   setIsMobile: React.Dispatch<React.SetStateAction<boolean>>;
@@ -32,8 +33,6 @@ export interface SnippetContextProps {
   setSelectedSnippet: React.Dispatch<
     React.SetStateAction<SingleSnippetType | null>
   >;
-  isNewSnippet: boolean;
-  setIsNewSnippet: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export interface SnippetProviderProps {
@@ -42,6 +41,7 @@ export interface SnippetProviderProps {
 
 export interface SingleSnippetType {
   id: string;
+  _id?: number;
   title: string;
   isFavorite: boolean;
   tags: string[];
@@ -72,6 +72,7 @@ export interface SnippetRefType {
 export interface AddBtnProps {
   openIcon?: React.ReactNode;
   closeIcon?: React.ReactNode;
+  isEditing: EditingState;
   onOpenClick?: () => void;
   onCloseClick?: () => void;
   onClick?: () => void;

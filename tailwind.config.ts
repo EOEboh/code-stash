@@ -11,18 +11,38 @@ export default {
   theme: {
     extend: {
       colors: {
-        background: "var(--background)",
-        foreground: "var(--foreground)",
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        primary: {
+          DEFAULT: "#2563eb", // blue-600
+          hover: "#1d4ed8", // blue-700
+          dark: "#1e40af", // blue-800
+          light: "#bfdbfe", // blue-200
         },
+        accent: {
+          purple: "#9333ea", // purple-600
+          green: "#16a34a", // green-600
+        },
+        neutral: {
+          900: "#111827", // gray-900
+          600: "#4b5563", // gray-600
+          500: "#6b7280", // gray-500
+        },
+        background: {
+          light: "#f8fafc", // slate-50
+          soft: "#eff6ff", // blue-50
+          subtle: "#e0e7ff", // indigo-100
+        },
+        // background: "var(--background)",
+        // foreground: "var(--foreground)",
+        // sidebar: {
+        //   DEFAULT: "hsl(var(--sidebar-background))",
+        //   foreground: "hsl(var(--sidebar-foreground))",
+        //   primary: "hsl(var(--sidebar-primary))",
+        //   "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+        //   accent: "hsl(var(--sidebar-accent))",
+        //   "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+        //   border: "hsl(var(--sidebar-border))",
+        //   ring: "hsl(var(--sidebar-ring))",
+        // },
       },
       borderRadius: {
         lg: "var(--radius)",

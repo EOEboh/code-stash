@@ -5,11 +5,13 @@ import { Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AddBtnProps } from "@/app/lib/definitions";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { EditingState } from "@/app/lib/enums";
 
 const AddSnippetBtnFAB: React.FC<AddBtnProps> = ({
   openIcon = <Plus className="h-6 w-6" />,
   closeIcon = <X className="h-6 w-6" />,
   onClick,
+  isEditing,
   onOpenClick,
   onCloseClick,
   className,
@@ -30,6 +32,10 @@ const AddSnippetBtnFAB: React.FC<AddBtnProps> = ({
 
     return () => clearTimeout(timer);
   }, []);
+
+  useEffect(() => {
+    setIsOpen(isEditing === EditingState.NEW_SNIPPET);
+  }, [isEditing]);
 
   if (!isMobile && !showOnDesktop) {
     return null;

@@ -11,6 +11,7 @@ import { SnippetContext } from "@/context/SnippetContext";
 import { SingleSnippetType } from "@/app/lib/definitions";
 import { getLanguageIcon } from "@/app/lib/data";
 import { Button } from "../ui/button";
+import { EditingState } from "@/app/lib/enums";
 
 const AllSnippets = () => {
   const snippetContextData = useContext(SnippetContext);
@@ -24,11 +25,14 @@ const AllSnippets = () => {
   return (
     <div
       className={`mt-4 grid gap-5 ${
-        isEditing ? `grid-cols-1` : `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
+        isEditing === EditingState.EXISTING_SNIPPET ||
+        isEditing === EditingState.NEW_SNIPPET
+          ? `grid-cols-1`
+          : `grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
       }  `}
     >
       {allSnippets.map((snippet) => (
-        <SingleSnippet key={snippet.id} snippet={snippet} />
+        <SingleSnippet key={snippet.id || snippet._id} snippet={snippet} />
       ))}
     </div>
   );
@@ -72,7 +76,7 @@ const SnippetHeader: React.FC<{
   snippet: SingleSnippetType;
   snippetRef: React.RefObject<HTMLDivElement>;
   selectedSnippet: SingleSnippetType | null;
-  isEditing: boolean;
+  isEditing: EditingState;
 }> = ({ title, snippet, snippetRef, selectedSnippet, isEditing }) => {
   const snippetContextData = useContext(SnippetContext);
   if (!snippetContextData) {
@@ -81,7 +85,11 @@ const SnippetHeader: React.FC<{
   const { toggleEditing } = snippetContextData;
 
   useEffect(() => {
-    if (isEditing && selectedSnippet?.id === snippet.id && snippetRef.current) {
+    if (
+      isEditing === EditingState.EXISTING_SNIPPET &&
+      selectedSnippet?.id === snippet.id &&
+      snippetRef.current
+    ) {
       snippetRef.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [isEditing, selectedSnippet?.id]);

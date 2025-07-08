@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 // import localFont from "next/font/local";
 import "./globals.css";
 import { inter } from "@/components/ui/fonts";
-import connectDB from "./lib/connectDB";
+import { connectDB } from "./lib/connectDB";
 
 export const metadata: Metadata = {
   title: "Code Stash",
