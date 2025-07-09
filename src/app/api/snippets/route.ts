@@ -7,10 +7,3 @@ export async function GET() {
   const snippets = await Snippet.find();
   return NextResponse.json(snippets);
 }
-
-export async function POST(req: Request) {
-  await connectDB();
-  const data = await req.json();
-  const snippet = await Snippet.create(data);
-  return NextResponse.json(snippet, { status: 201 });
-}
