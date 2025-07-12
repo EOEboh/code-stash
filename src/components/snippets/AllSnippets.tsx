@@ -1,5 +1,5 @@
 "use client";
-import { ChevronDown, ChevronUp, Star } from "lucide-react";
+import { ChevronDown, ChevronUp, Code2, Plus, Star } from "lucide-react";
 import type React from "react";
 import { IoMdTrash } from "react-icons/io";
 import SyntaxHighlighter from "react-syntax-highlighter";
@@ -12,6 +12,7 @@ import { Button } from "../ui/button";
 import { EditingState } from "@/app/lib/enums";
 import { deleteSnippetAction } from "@/app/lib/snippets/actions";
 import DeleteConfirmationModal from "../modals/DeleteModal";
+import { v4 as uuidv4 } from "uuid";
 
 type DeleteModalState = {
   isOpen: boolean;
@@ -31,12 +32,18 @@ const AllSnippets = () => {
   if (!snippetContextData) {
     return null;
   }
-  const { allSnippets, isEditing, setAllSnippets } = snippetContextData;
+  const {
+    allSnippets,
+    isEditing,
+    setAllSnippets,
+    setSelectedSnippet,
+    setIsEditing,
+  } = snippetContextData;
 
   const handleDeleteClick = (snippet: SingleSnippetType) => {
     setDeleteModal({
       isOpen: true,
-      snippetId: snippet._id,
+      snippetId: snippet._id ?? null,
       snippetTitle: snippet.title,
     });
   };
@@ -59,9 +66,6 @@ const AllSnippets = () => {
     startTransition(async () => {
       try {
         await deleteSnippetAction(snippetIdToDelete);
-
-        // Close modal
-        setDeleteModal({ isOpen: false, snippetId: null, snippetTitle: "" });
       } catch (error) {
         console.error("Delete failed:", error);
         // Rollback if deletion fails
@@ -79,11 +83,30 @@ const AllSnippets = () => {
     }
   };
 
+  const createNewSnippet = () => {
+    const newSingleSnippet = {
+      id: uuidv4(),
+      _id: undefined,
+      title: "",
+      isFavorite: false,
+      tags: [],
+      description: "",
+      code: "",
+      language: "",
+      creationDate: "",
+    };
+
+    setSelectedSnippet(newSingleSnippet);
+    setIsEditing(EditingState.NEW_SNIPPET);
+  };
+
   return (
     <div className="p-4 bg-background-light min-h-screen">
       <div className="max-w-7xl mx-auto">
-        {isEditing === EditingState.EXISTING_SNIPPET ||
-        isEditing === EditingState.NEW_SNIPPET ? (
+        {allSnippets.length === 0 ? (
+          <EmptyState onCreateNew={createNewSnippet} />
+        ) : isEditing === EditingState.EXISTING_SNIPPET ||
+          isEditing === EditingState.NEW_SNIPPET ? (
           // Show one-column layout during editing
           <div className="grid grid-cols-1 gap-3">
             {allSnippets.map((snippet) => (
@@ -110,6 +133,7 @@ const AllSnippets = () => {
             ))}
           </div>
         )}
+
         {/* Confirmation Modal */}
         <DeleteConfirmationModal
           isOpen={deleteModal.isOpen}
@@ -361,6 +385,49 @@ const SnippetFooter: React.FC<{
       >
         <IoMdTrash className="w-4 h-4" />
       </button>
+    </div>
+  );
+};
+
+const EmptyState: React.FC<{
+  onCreateNew?: () => void;
+}> = ({ onCreateNew }) => {
+  return (
+    <div className="flex flex-col items-center justify-center py-16 px-4">
+      <div className="text-center max-w-md">
+        {/* Icon */}
+        <div className="mx-auto w-24 h-24 bg-background-subtle rounded-full flex items-center justify-center mb-6">
+          <Code2 className="w-12 h-12 text-primary/60" />
+        </div>
+
+        {/* Title */}
+        <h3 className="text-xl font-semibold text-neutral-900 mb-3">
+          No code snippets yet
+        </h3>
+
+        {/* Description */}
+        <p className="text-neutral-600 leading-relaxed mb-8">
+          Start building your code library by creating your first snippet. Save
+          and organize your favorite code pieces for quick access.
+        </p>
+
+        {/* Call to Action */}
+        <Button
+          onClick={onCreateNew}
+          className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-hover transition-colors duration-200 font-medium flex items-center gap-2 mx-auto"
+        >
+          <Plus className="w-4 h-4" />
+          Create Your First Snippet
+        </Button>
+
+        {/* Additional Help Text */}
+        <div className="mt-8 pt-6 border-t border-gray-200">
+          <p className="text-sm text-neutral-500">
+            💡 <strong>Pro tip:</strong> You can organize snippets with tags and
+            search through them easily once you start adding some.
+          </p>
+        </div>
+      </div>
     </div>
   );
 };
