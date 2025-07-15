@@ -5,7 +5,6 @@ import LanguageSelector from "./LanguageSelector";
 import { SingleSnippetType } from "@/app/lib/definitions";
 import { EditingState } from "@/app/lib/enums";
 import { useState, useTransition } from "react";
-import { v4 as uuidv4 } from "uuid";
 
 const EditForm: React.FC<{
   singleSnippet: SingleSnippetType;
@@ -15,12 +14,16 @@ const EditForm: React.FC<{
   allSnippets: SingleSnippetType[];
   setAllSnippets: React.Dispatch<React.SetStateAction<SingleSnippetType[]>>;
   setIsEditing: React.Dispatch<React.SetStateAction<EditingState>>;
+  setSelectedSnippet?: React.Dispatch<
+    React.SetStateAction<SingleSnippetType | null>
+  >;
 }> = ({
   singleSnippet,
   setSingleSnippet,
   allSnippets,
   setAllSnippets,
   setIsEditing,
+  setSelectedSnippet,
 }) => {
   const [languageForAceEditor, setLanguageForAceEditor] =
     useState<string>("javascript");
@@ -33,6 +36,8 @@ const EditForm: React.FC<{
     const { name, value } = event.target;
     const updatedSnippet = { ...singleSnippet, [name]: value };
     setSingleSnippet(updatedSnippet);
+
+    console.log("isEditingExisting", isEditingExisting);
 
     if (isEditingExisting) {
       const updatedAll = allSnippets.map((snippet) =>
@@ -50,24 +55,24 @@ const EditForm: React.FC<{
     }
   }
 
+  console.log("singleSnippet", singleSnippet);
+
   const handleSave = () => {
     if (!singleSnippet) return;
 
-    const generatedId = singleSnippet.id || uuidv4();
-
     const payload: SingleSnippetType = {
       ...singleSnippet,
-      id: generatedId,
       creationDate: new Date().toISOString(),
     };
 
     if (isEditingExisting) {
+      // edit snippet
       const originalSnippet = allSnippets.find(
-        (snippet) => snippet.id === generatedId
+        (snippet) => snippet.id === singleSnippet.id
       );
 
       const updatedAll = allSnippets.map((snippet) =>
-        snippet.id === generatedId ? payload : snippet
+        snippet.id === singleSnippet.id ? payload : snippet
       );
       setAllSnippets(updatedAll);
       setIsEditing(EditingState.NONE);
@@ -80,7 +85,7 @@ const EditForm: React.FC<{
 
           if (originalSnippet) {
             const rolledBack = allSnippets.map((snippet) =>
-              snippet.id === generatedId ? originalSnippet : snippet
+              snippet.id === singleSnippet.id ? originalSnippet : snippet
             );
             setAllSnippets(rolledBack);
           }
@@ -93,8 +98,13 @@ const EditForm: React.FC<{
       startTransition(async () => {
         try {
           const newSnippet = await addSnippetAction(payload);
-          setAllSnippets([...allSnippets, newSnippet]);
-          setSingleSnippet(undefined);
+
+          setAllSnippets((prev) => [...prev, newSnippet]);
+
+          if (setSelectedSnippet) {
+            setSelectedSnippet(newSnippet);
+          }
+          setSingleSnippet(newSnippet);
 
           setIsEditing(EditingState.NONE);
         } catch (error) {

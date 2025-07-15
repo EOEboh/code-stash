@@ -41,7 +41,7 @@ export interface SnippetProviderProps {
 
 export interface SingleSnippetType {
   id: string;
-  _id?: number;
+  _id?: string;
   title: string;
   isFavorite: boolean;
   tags: string[];

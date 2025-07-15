@@ -33,3 +33,13 @@ export async function addSnippetAction(snippetData: SingleSnippetType) {
     );
   }
 }
+
+export async function deleteSnippetAction(id: string) {
+  try {
+    await connectDB();
+    await Snippet.findByIdAndDelete(id);
+  } catch (err) {
+    console.error("Failed to delete snippet:", err);
+    throw new Error("Deletion failed");
+  }
+}

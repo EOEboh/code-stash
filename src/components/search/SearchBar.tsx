@@ -31,6 +31,7 @@ const SearchBar = ({}) => {
   function createNewSnippet() {
     const newSingleSnippet = {
       id: uuidv4(),
+      _id: undefined,
       title: "",
       isFavorite: false,
       tags: [],
@@ -39,10 +40,6 @@ const SearchBar = ({}) => {
       language: "",
       creationDate: "",
     };
-
-    // if (newSingleSnippet.title === "") {
-    //   newSingleSnippet.title = "Untitled Snippet";
-    // }
 
     setSelectedSnippet(newSingleSnippet);
     setIsEditing(EditingState.NEW_SNIPPET);

@@ -17,6 +17,7 @@ const ContentEditor = () => {
     setIsEditing,
     isMobile,
     selectedSnippet,
+    setSelectedSnippet,
     allSnippets,
     setAllSnippets,
   } = snippetContext;
@@ -27,7 +28,7 @@ const ContentEditor = () => {
 
   useEffect(() => {
     if (isEditing && selectedSnippet) {
-      setSingleSnippet({ ...selectedSnippet }); // <-- clone to avoid shared reference
+      setSingleSnippet({ ...selectedSnippet }); // clone to avoid shared reference
     }
   }, [isEditing, selectedSnippet]);
 
@@ -69,6 +70,7 @@ const ContentEditor = () => {
             allSnippets={allSnippets}
             setAllSnippets={setAllSnippets}
             setIsEditing={setIsEditing}
+            setSelectedSnippet={setSelectedSnippet}
           />
         </>
       )}

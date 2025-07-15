@@ -47,7 +47,9 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
   }, []);
 
   const toggleEditing = (snippet: SingleSnippetType) => {
-    const isSnippetSame = selectedSnippet?.id === snippet.id;
+    const isSnippetSame =
+      selectedSnippet?._id === snippet._id ||
+      selectedSnippet?.id === snippet.id;
 
     setIsEditing((prevState) => {
       if (isSnippetSame) {
@@ -57,9 +59,9 @@ export const SnippetProvider: React.FC<SnippetProviderProps> = ({
       }
       return EditingState.EXISTING_SNIPPET;
     });
+
     setSelectedSnippet({ ...snippet });
   };
-  console.log("isEditing", isEditing);
 
   return (
     <SnippetContext.Provider
