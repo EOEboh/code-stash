@@ -51,7 +51,8 @@ git clone https://github.com/EOEboh/code-stash.git
 
 ### 2. Install dependencies
 
-```npm install
+```bash
+npm install
 
 ```
 
